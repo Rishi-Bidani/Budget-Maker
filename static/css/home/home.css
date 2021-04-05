@@ -1,7 +1,7 @@
-.card{
-	width: 95%;
-	height: 10rem;
-	background-color: white;
+.card {
+    width: 95%;
+    height: 10rem;
+    background-color: white;
 }
 
 /*.card1{
@@ -26,48 +26,67 @@
 */
 
 /*Cadet blue*/
-.cardtype1{
-	display: flex;
-	border-bottom: 5px solid #58A4B0;
-	border-radius: 0.5rem;
-	background-image: linear-gradient(to bottom,#58A4B0, #FFF8ED);
+.cardtype1 {
+    display: flex;
+    border-bottom: 5px solid #58A4B0;
+    border-radius: 0.5rem;
+    background-image: linear-gradient(to bottom, #58A4B0, #FFF8ED);
 }
+
 /* Lilac Purple */
-.cardtype2{
-	display: flex;
-	border-bottom: 5px solid #C19AB7;
-	border-radius: 0.5rem;
-	background-image: linear-gradient(to bottom,#C19AB7, #FFF8ED);
+.cardtype2 {
+    display: flex;
+    border-bottom: 5px solid #C19AB7;
+    border-radius: 0.5rem;
+    background-image: linear-gradient(to bottom, #C19AB7, #FFF8ED);
 }
 
 /* Shamrock Green */
-.cardtype3{
-	display: flex;
-	border-bottom: 5px solid #499F68;
-	border-radius: 0.5rem;
-	background-image: linear-gradient(to bottom,#499F68, #FFF8ED);
+.cardtype3 {
+    display: flex;
+    border-bottom: 5px solid #499F68;
+    border-radius: 0.5rem;
+    background-image: linear-gradient(to bottom, #499F68, #FFF8ED);
 }
 
 /* Rhythm purple */
-.cardtype4{
-	display: flex;
-	border-bottom: 5px solid #7E7792;
-	border-radius: 0.5rem;
-	background-image: linear-gradient(to bottom,#7E7792, #FFF8ED);
+.cardtype4 {
+    display: flex;
+    border-bottom: 5px solid #7E7792;
+    border-radius: 0.5rem;
+    background-image: linear-gradient(to bottom, #7E7792, #FFF8ED);
 }
- 
+
 /* cadet blue darker */
-.cardtype5{
-	display: flex;
-	border-bottom: 5px solid #729EA1;
-	border-radius: 0.5rem;
-	background-image: linear-gradient(to bottom,#729EA1, #FFF8ED);
+.cardtype5 {
+    display: flex;
+    border-bottom: 5px solid #729EA1;
+    border-radius: 0.5rem;
+    background-image: linear-gradient(to bottom, #729EA1, #FFF8ED);
 }
 
 /* Honeydrew greenish */
-.cardtype6{
-	display: flex;
-	border-bottom: 5px solid #DDF8E8;
-	border-radius: 0.5rem;
-	background-image: linear-gradient(to bottom,#DDF8E8, #FFF8ED);
+.cardtype6 {
+    display: flex;
+    border-bottom: 5px solid #DDF8E8;
+    border-radius: 0.5rem;
+    background-image: linear-gradient(to bottom, #DDF8E8, #FFF8ED);
+}
+
+img {
+	height: 50%;
+	align-self: center;
+	padding-left: 1rem;
+}
+dl{
+	align-self: center;
+	padding-left: 1rem;
+	color: var(--raisin-black)
+}
+dl dt{
+	font-weight: 600;
+	font-size: 18px;
+}
+dl dd{
+	padding-bottom: 0.5rem;	
 }

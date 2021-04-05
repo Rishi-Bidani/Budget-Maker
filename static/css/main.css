@@ -11,6 +11,7 @@
     --navColorBarHeight: 3rem;
     --colorBarWidth: calc(100% - 16.677%);
     --ulStartHeight: calc(var(--navColorBarHeight) + var(--mainPageStartHeight));
+    --grCols: 3;
 }
 
 :root {
@@ -19,6 +20,18 @@
     --color1: #bbbfca;
     /*--color2: #4a47a3;*/
     --color2: #3A546D;
+}
+
+:root {
+    --raisin-black: #272932ff;
+    --bdazzled-blue: #3a546dff;
+    --rhythm: #7e7792ff;
+    --lilac: #c19ab7ff;
+    --honeydew: #ddf8e8ff;
+    --cadet-blue: #729ea1ff;
+    --shamrock-green: #499f68ff;
+    --cadet-blue-2: #58a4b0ff;
+    --floral-white: #fff8edff;
 }
 
 body {
@@ -34,7 +47,7 @@ body {
     justify-content: center;
 }
 
-.sidebar ul{
+.sidebar ul {
     position: fixed;
 }
 
@@ -72,13 +85,13 @@ body {
     text-transform: uppercase;
 }
 
-.navactive:after{
-    border-bottom: 1px solid red; 
+.navactive {
+    border-bottom: 1px solid red;
 }
 
 li:hover {
     border-bottom: 1px solid red;
-    transform: translateY(-5px);
+    transform: translateY(-2px);
     transition: 0.2s;
     box-shadow: 0px 0px 10px 0.5px white;
 }
@@ -98,6 +111,12 @@ ul {
 .addPadding {
     padding: 2rem;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(var(--grCols), 1fr);
     grid-gap: 10px;
+}
+
+@media screen and (max-width:1200px) {
+    :root{
+        --grCols: 2;
+    }
 }
