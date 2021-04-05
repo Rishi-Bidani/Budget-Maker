@@ -1,7 +1,7 @@
 .card{
 	width: 90%;
 	height: 10rem;
-	background-color: red;
+	background-color: white;
 }
 
 /*.card1{
@@ -14,7 +14,7 @@
 	gridColumn:3;
 }*/
 
-.card:nth-child(3n+1){
+/*.card:nth-child(3n+1){
 	grid-column: 1;
 }
 .card:nth-child(3n+2){
@@ -22,4 +22,12 @@
 }
 .card:nth-child(3n+3){
 	grid-column: 3;
+}
+*/
+
+.cardtype1{
+	display: flex;
+	border-bottom: 5px solid blue;
+	border-radius: 0.5rem;
+	background-image: linear-gradient(to bottom,#a4ebf3, #ccf2f4);
 }
