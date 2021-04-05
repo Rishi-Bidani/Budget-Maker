@@ -1,0 +1,14 @@
+{
+  "name": "BudgetMaker",
+  "version": "1.0.0",
+  "description": "Make budgets for yourself",
+  "main": "main.js",
+  "author": "Rishi",
+  "scripts": {
+  	"start": "electron ."
+  },
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^12.0.2"
+  }
+}

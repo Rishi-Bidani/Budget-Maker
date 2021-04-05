@@ -1,0 +1,83 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Arial";
+}
+
+:root {
+    --navFontSize: clamp(15px, 5vh, 1rem);
+    --bordRad: 2rem;
+    --navColorBarHeight: 3rem;
+    --colorBarWidth: calc(100% - 16.677%);
+}
+
+:root {
+    --backgroundColor: #413c69;
+    --color1: #bbbfca;
+    --color2: #4a47a3;
+}
+
+body {
+    background-color: var(--backgroundColor);
+    display: flex;
+}
+
+.sidebar {
+    height: 100vh;
+    background-color: #413c69;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.mainPage {
+    background-color: #bbbfca;
+    float: right;
+    flex: 5;
+    height: 95vh;
+    align-self: flex-end;
+    border-top-left-radius: var(--bordRad);
+}
+
+.navColorBar {
+    width: var(--colorBarWidth);
+    position: absolute;
+    float: top;
+    height: var(--navColorBarHeight);
+    background-image: linear-gradient(to right, var(--color2), var(--backgroundColor));
+    border-top-left-radius: var(--bordRad);
+    display: flex;
+}
+
+.navColorBar h1 {
+    color: white;
+    padding-left: 2rem;
+    align-self: center;
+}
+
+.navitem {
+    color: lightgrey;
+    list-style: none;
+    padding: 1rem;
+    font-size: var(--navFontSize);
+    text-transform: uppercase;
+}
+
+li:hover {
+    border-bottom: 1px solid red;
+}
+
+ul {
+    padding-top: 12vh;
+    cursor: pointer;
+}
+
+.container {
+    width: 100%;
+    position: relative;
+    padding-right: 0;
+    margin-top: var(--navColorBarHeight);
+    display: grid;
+    grid-template-columns: repeat(3, 3fr);
+    grid-gap: 10px;
+}
