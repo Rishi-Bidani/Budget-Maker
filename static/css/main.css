@@ -7,8 +7,10 @@
 :root {
     --navFontSize: clamp(15px, 5vh, 1rem);
     --bordRad: 2rem;
+    --mainPageStartHeight: 3rem;
     --navColorBarHeight: 3rem;
     --colorBarWidth: calc(100% - 16.677%);
+    --ulStartHeight: calc(var(--navColorBarHeight) + var(--mainPageStartHeight));
 }
 
 :root {
@@ -30,13 +32,17 @@ body {
     justify-content: center;
 }
 
+.sidebar ul{
+    position: fixed;
+}
+
 .mainPage {
     background-color: #bbbfca;
     float: right;
     flex: 5;
-    height: 95vh;
-    align-self: flex-end;
+    height: auto;
     border-top-left-radius: var(--bordRad);
+    margin-top: var(--mainPageStartHeight);
 }
 
 .navColorBar {
@@ -68,16 +74,20 @@ li:hover {
 }
 
 ul {
-    padding-top: 12vh;
+    padding-top: var(--ulStartHeight);
     cursor: pointer;
 }
 
-.container {
+.gridContainer {
     width: 100%;
     position: relative;
     padding-right: 0;
     margin-top: var(--navColorBarHeight);
+}
+
+.addPadding {
+    padding: 2rem;
     display: grid;
-    grid-template-columns: repeat(3, 3fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-gap: 10px;
 }

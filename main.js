@@ -7,6 +7,8 @@ const { app, BrowserWindow, ipcMain, webContents } = electron;
 app.on("ready", function () {
   mainWindow = new BrowserWindow({
     width: 1100,
+    minWidth: 900,
+    minHeight: 700,
   });
   mainWindow.maximize();
   mainWindow.loadURL(
