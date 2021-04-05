@@ -1,5 +1,5 @@
 .card{
-	width: 90%;
+	width: 95%;
 	height: 10rem;
 	background-color: white;
 }
@@ -25,9 +25,49 @@
 }
 */
 
+/*Cadet blue*/
 .cardtype1{
 	display: flex;
-	border-bottom: 5px solid blue;
+	border-bottom: 5px solid #58A4B0;
 	border-radius: 0.5rem;
-	background-image: linear-gradient(to bottom,#a4ebf3, #ccf2f4);
+	background-image: linear-gradient(to bottom,#58A4B0, #FFF8ED);
+}
+/* Lilac Purple */
+.cardtype2{
+	display: flex;
+	border-bottom: 5px solid #C19AB7;
+	border-radius: 0.5rem;
+	background-image: linear-gradient(to bottom,#C19AB7, #FFF8ED);
+}
+
+/* Shamrock Green */
+.cardtype3{
+	display: flex;
+	border-bottom: 5px solid #499F68;
+	border-radius: 0.5rem;
+	background-image: linear-gradient(to bottom,#499F68, #FFF8ED);
+}
+
+/* Rhythm purple */
+.cardtype4{
+	display: flex;
+	border-bottom: 5px solid #7E7792;
+	border-radius: 0.5rem;
+	background-image: linear-gradient(to bottom,#7E7792, #FFF8ED);
+}
+ 
+/* cadet blue darker */
+.cardtype5{
+	display: flex;
+	border-bottom: 5px solid #729EA1;
+	border-radius: 0.5rem;
+	background-image: linear-gradient(to bottom,#729EA1, #FFF8ED);
+}
+
+/* Honeydrew greenish */
+.cardtype6{
+	display: flex;
+	border-bottom: 5px solid #DDF8E8;
+	border-radius: 0.5rem;
+	background-image: linear-gradient(to bottom,#DDF8E8, #FFF8ED);
 }

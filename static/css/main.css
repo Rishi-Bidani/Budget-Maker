@@ -14,9 +14,11 @@
 }
 
 :root {
-    --backgroundColor: #413c69;
+    /*--backgroundColor: #413c69;*/
+    --backgroundColor: #272932;
     --color1: #bbbfca;
-    --color2: #4a47a3;
+    /*--color2: #4a47a3;*/
+    --color2: #3A546D;
 }
 
 body {
@@ -26,7 +28,7 @@ body {
 
 .sidebar {
     height: 100vh;
-    background-color: #413c69;
+    background-color: var(--backgroundColor);
     flex: 1;
     display: flex;
     justify-content: center;
