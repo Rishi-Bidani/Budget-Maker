@@ -1,0 +1,38 @@
+:root{
+	--grCols2: 2;
+}
+
+@media screen and (max-width:1100px) {
+    :root{
+        --grCols2: 1;
+    }
+}
+
+.addGrid2{
+	display: grid;
+	grid-template-columns: repeat(var(--grCols2), 1fr);
+	grid-gap: 10px;
+}
+
+.formCard{
+	width: 100%;
+	height: 15rem;
+	background-color: white;
+	display: flex;
+}
+
+.addIcon{
+	justify-content: center;
+	height: 15rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+img{
+	height: 5rem;
+}
+#addButton:hover{
+	cursor: pointer;
+	filter: invert(60%) sepia(90%) saturate(2476%) hue-rotate(86deg) brightness(80%) contrast(130%);
+}

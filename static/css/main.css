@@ -110,9 +110,6 @@ ul {
 
 .addPadding {
     padding: 2rem;
-    display: grid;
-    grid-template-columns: repeat(var(--grCols), 1fr);
-    grid-gap: 10px;
 }
 
 @media screen and (max-width:1200px) {

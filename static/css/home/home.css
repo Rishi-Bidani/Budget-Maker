@@ -25,6 +25,12 @@
 }
 */
 
+.addGrid {
+    display: grid;
+    grid-template-columns: repeat(var(--grCols), 1fr);
+    grid-gap: 10px;
+}
+
 /*Cadet blue*/
 .cardtype1 {
     display: flex;
@@ -74,19 +80,22 @@
 }
 
 img {
-	height: 50%;
-	align-self: center;
-	padding-left: 1rem;
+    height: 50%;
+    align-self: center;
+    padding-left: 1rem;
 }
-dl{
-	align-self: center;
-	padding-left: 1rem;
-	color: var(--raisin-black)
+
+dl {
+    align-self: center;
+    padding-left: 1rem;
+    color: var(--raisin-black)
 }
-dl dt{
-	font-weight: 600;
-	font-size: 18px;
+
+dl dt {
+    font-weight: 600;
+    font-size: 18px;
 }
-dl dd{
-	padding-bottom: 0.5rem;	
+
+dl dd {
+    padding-bottom: 0.5rem;
 }
