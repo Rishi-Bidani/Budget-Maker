@@ -10,13 +10,15 @@
 
 <body>
     <nav class="sidebar">
-        <ul>
-            <li class="navitem navactive" onclick="sendWindow(this)">Home</li>
-            <li class="navitem" onclick="sendWindow(this)">Plan Budget</li>
-            <li class="navitem" onclick="sendWindow(this)">Add Expenses</li>
-            <li class="navitem" onclick="sendWindow(this)">Plan a Trip</li>
-            <li class="navitem" onclick="sendWindow(this)">Add a project</li>
-            <li class="navitem" onclick="sendWindow(this)">View Past Details</li>
+        <ul id="navList">
+            <li class="navitem">Home</li>
+            <li class="navitem navactive">
+                Plan Budget
+            </li>
+            <li class="navitem">Add Expenses</li>
+            <li class="navitem">Plan a Trip</li>
+            <li class="navitem">Add a project</li>
+            <li class="navitem">View Past Details</li>
         </ul>
     </nav>
     <div class="mainPage">
@@ -55,12 +57,10 @@
     const electron = require("electron");
     const { ipcRenderer } = electron;
 
-    // let navitems = Array.from(document.getElementsByClassName("navitem"));
-    // console.log(navitems[0])
+    var ul = document.getElementById('navList');
 
-    function sendWindow(which) {
-        let compare = which.innerText;
-        console.log(which.innerText);
+    ul.onclick = function(event) {
+        var compare = event.target.innerText;
 
         if (compare == "HOME") {
             console.log('Reached')
@@ -72,7 +72,7 @@
         } else {
             console.log("ERROR")
         }
-    }
+    };
     </script>
 </body>
 
