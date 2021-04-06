@@ -6,7 +6,7 @@
 
 :root {
     --navFontSize: clamp(15px, 5vh, 1rem);
-    --bordRad: 2rem;
+    --bordRad: 1.5rem;
     --mainPageStartHeight: 3rem;
     --navColorBarHeight: 3rem;
     --colorBarWidth: calc(100% - 16.677%);
