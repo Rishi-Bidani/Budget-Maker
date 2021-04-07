@@ -112,6 +112,11 @@ ul {
     padding: 2rem;
 }
 
+.inlineit{
+    display: inline-flex;
+    width: 100%;
+}
+
 @media screen and (max-width:1200px) {
     :root{
         --grCols: 2;

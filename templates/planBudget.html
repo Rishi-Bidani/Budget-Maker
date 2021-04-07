@@ -29,11 +29,53 @@
             <div id="formSection" class="addPadding addGrid2">
                 <div class="formCard">
                     <section class="formContent">
-                        <h1 class ="formTitle" contenteditable="true">Essentials
-                        </h1>
-                        <span class="formItem" contenteditable="true">
-                            Food
-                        </span>
+                        <div class="inlineit">
+                            <h1 class="formTitle" contenteditable="true">
+                                Essentials
+                            </h1>
+                            <div class="alignright">
+                                <button>
+                                    <img src="../static/icons/delete.svg" alt="" class="delIconLarge">
+                                </button>
+                            </div>
+                        </div>
+                        <table class="formTable">
+                            <thead>
+                                <tr>
+                                    <th>Sub Category</th>
+                                    <th>Amount</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" class="formText">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="formText">
+                                    </td>
+                                    <td>
+                                        <button class="delBut">
+                                            <img src="../static/icons/delete.svg" class="delIcon" alt="" onclick="deleteThisRow(this)">
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="text" class="formText">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="formText">
+                                    </td>
+                                    <td>
+                                        <button class="delBut">
+                                            <img src="../static/icons/delete.svg" class="delIcon" alt="" onclick="deleteThisRow(this)">
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </section>
                 </div>
                 <div class="formCard"></div>
@@ -45,6 +87,44 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+    let formtable = Array.from(document.getElementsByClassName("formTable"));
+    formtable[0].addEventListener("keydown", (event) => {
+        // console.log(event.key, event.code)
+        if (event.code == "Enter") {
+            console.log(event.code);
+            let row = formtable[0].insertRow(-1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            // cell1.contentEditable = "true";
+            // cell2.contentEditable = "true";
+            cell1.innerHTML = "<input type='text'  class='formText'>";
+            cell2.innerHTML = "<input type='text'  class='formText'>";
+            cell3.innerHTML = `<button class='delBut'>
+                                    <img src='../static/icons/delete.svg'
+                                         class='delIcon' alt=''>
+                                </button>`
+
+        }
+    })
+    let allDelete = Array.from(document.getElementsByClassName("delBut"));
+
+    // buttonDelete(allDelete);
+
+    function deleteThisRow(button) {
+        let row = button.parentElement.parentElement;
+
+        let table = row.parentElement.parentElement;
+        let numrows = table.getElementsByTagName('tr').length;
+        if (numrows == 1) {
+            console.log("reached")
+        } else {
+            let index = row.rowIndex;
+            table.deleteRow(index);
+        }
+    }
+    </script>
     <script type="text/javascript">
     const electron = require("electron");
     const { ipcRenderer } = electron;
@@ -78,7 +158,7 @@
     }
 
     Element.prototype.insertChildAtIndex = function(child, index) {
-        if (!index) {index = 0}
+        if (!index) { index = 0 }
         if (index >= this.children.length) {
             this.appendChild(child)
         } else {
