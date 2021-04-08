@@ -103,12 +103,20 @@
 
     let allForms = Array.from(document.getElementsByClassName("formContent"));
 
-    for (let i = 0; i < allForms.length; i++) {
+    async function usetemplate(){
+        for (let i = 0; i < allForms.length; i++) {
         let formclone = tabFormTemp.content.cloneNode(true);
-
-        console.log(allForms[i])
         allForms[i].appendChild(formclone);
+        }
     }
+
+    usetemplate().then(()=>{
+        let allTitles = Array.from(document.getElementsByClassName("formTitle"));
+        console.log(allTitles);
+        allTitles[1].innerText = "Entertainment";
+        allTitles[2].innerText = "Emergency";
+    })
+
     </script>
 
     <script>
