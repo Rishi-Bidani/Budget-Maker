@@ -29,64 +29,87 @@
             <div id="formSection" class="addPadding addGrid2">
                 <div class="formCard">
                     <section class="formContent">
-                        <div class="inlineit">
-                            <h1 class="formTitle" contenteditable="true">
-                                Essentials
-                            </h1>
-                            <div class="alignright">
-                                <button onclick="deletethisform(this)">
-                                    <img src="../static/icons/delete.svg" alt="" class="delIconLarge">
-                                </button>
-                            </div>
-                        </div>
-                        <table class="formTable">
-                            <thead>
-                                <tr>
-                                    <th>Sub Category</th>
-                                    <th>Amount</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <input type="text" class="formText">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="formText">
-                                    </td>
-                                    <td>
-                                        <button class="delBut" onclick="deleteThisRow(this)">
-                                            <img src="../static/icons/delete.svg" class="delIcon" alt="">
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input type="text" class="formText">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="formText">
-                                    </td>
-                                    <td>
-                                        <button class="delBut" onclick="deleteThisRow(this)">
-                                            <img src="../static/icons/delete.svg" class="delIcon" alt="">
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </section>
                 </div>
-                <div class="formCard"></div>
-                <div class="formCard"></div>
-                <div class="formCard"></div>
+                <div class="formCard">
+                    <section class="formContent">
+                    </section>
+                </div>
+                <div class="formCard">
+                    <section class="formContent">
+                    </section>
+                </div>
+                <div class="formCard">
+                    <section class="formContent">
+                    </section>
+                </div>
                 <div class="addIcon">
                     <img id="addButton" src="../static/icons/plus.svg" alt="">
                 </div>
             </div>
         </div>
     </div>
+    <template>
+        <div class="inlineit">
+            <h1 class="formTitle" contenteditable="true">
+                Essentials
+            </h1>
+            <div class="alignright">
+                <button onclick="deletethisform(this)">
+                    <img src="../static/icons/delete.svg" alt="" class="delIconLarge">
+                </button>
+            </div>
+        </div>
+        <table class="formTable">
+            <thead>
+                <tr>
+                    <th>Sub Category</th>
+                    <th>Amount</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="text" class="formText">
+                    </td>
+                    <td>
+                        <input type="text" class="formText">
+                    </td>
+                    <td>
+                        <button class="delBut" onclick="deleteThisRow(this)">
+                            <img src="../static/icons/delete.svg" class="delIcon" alt="">
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" class="formText">
+                    </td>
+                    <td>
+                        <input type="text" class="formText">
+                    </td>
+                    <td>
+                        <button class="delBut" onclick="deleteThisRow(this)">
+                            <img src="../static/icons/delete.svg" class="delIcon" alt="">
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+    <script>
+    let tabFormTemp = document.getElementsByTagName("template")[0];
+
+    let allForms = Array.from(document.getElementsByClassName("formContent"));
+
+    for (let i = 0; i < allForms.length; i++) {
+        let formclone = tabFormTemp.content.cloneNode(true);
+
+        console.log(allForms[i])
+        allForms[i].appendChild(formclone);
+    }
+    </script>
     <script>
     function deletethisform(button) {
         let formtodelete = button.parentElement.parentElement.parentElement.parentElement;
@@ -132,6 +155,8 @@
         }
     }
     </script>
+    
+    <!-- Navigation -->
     <script type="text/javascript">
     const electron = require("electron");
     const { ipcRenderer } = electron;
@@ -153,13 +178,18 @@
         }
     };
     </script>
+
+    <!-- This script is for adding new form cards -->
     <script type="text/javascript">
     let addButton = document.getElementById("addButton");
     addButton.onclick = () => {
         console.log("clicked")
-        let forms = document.getElementById("formSection")
+        let forms = document.getElementById("formSection");
+        let section = document.createElement("section");
+        section.classList.add("formContent");
         let newForm = document.createElement("div");
         newForm.classList.add("formCard");
+        newForm.appendChild(section)
         let secondLast = forms.children.length - 1;
         forms.insertChildAtIndex(newForm, secondLast);
     }
