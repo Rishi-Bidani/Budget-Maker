@@ -110,6 +110,7 @@
         allForms[i].appendChild(formclone);
     }
     </script>
+
     <script>
     function deletethisform(button) {
         let formtodelete = button.parentElement.parentElement.parentElement.parentElement;
@@ -117,66 +118,67 @@
         formtodelete.remove();
     }
     </script>
+
     <script type="text/javascript">
-    let formtable = Array.from(document.getElementsByClassName("formTable"));
-    formtable[0].addEventListener("keydown", (event) => {
-        if (event.code == "Enter") {
-            console.log(event.code);
-            let row = formtable[0].insertRow(-1);
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-            var cell3 = row.insertCell(2);
-            cell1.innerHTML = "<input type='text'  class='formText'>";
-            cell2.innerHTML = "<input type='text'  class='formText'>";
-            cell3.innerHTML = `<button class='delBut'
-                                    onclick='deleteThisRow(this)'>
-                                    <img src='../static/icons/delete.svg'
-                                         class='delIcon' alt=''>
-                                </button>`
+        let formtable = Array.from(document.getElementsByClassName("formTable"));
+        formtable[0].addEventListener("keydown", (event) => {
+            if (event.code == "Enter") {
+                console.log(event.code);
+                let row = formtable[0].insertRow(-1);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                cell1.innerHTML = "<input type='text'  class='formText'>";
+                cell2.innerHTML = "<input type='text'  class='formText'>";
+                cell3.innerHTML = `<button class='delBut'
+                                        onclick='deleteThisRow(this)'>
+                                        <img src='../static/icons/delete.svg'
+                                             class='delIcon' alt=''>
+                                    </button>`
 
+            }
+        })
+        let allDelete = Array.from(document.getElementsByClassName("delBut"));
+
+        // buttonDelete(allDelete);
+
+        function deleteThisRow(button) {
+            let row = button.parentElement.parentNode;
+            console.log(row);
+            let table = row.parentElement.parentNode;
+            console.log(table)
+            let numrows = table.getElementsByTagName('tr').length;
+            if (numrows == 1) {
+                console.log("reached")
+            } else {
+                let index = row.rowIndex;
+                console.log(index)
+                table.deleteRow(index);
+            }
         }
-    })
-    let allDelete = Array.from(document.getElementsByClassName("delBut"));
-
-    // buttonDelete(allDelete);
-
-    function deleteThisRow(button) {
-        let row = button.parentElement.parentNode;
-        console.log(row);
-        let table = row.parentElement.parentNode;
-        console.log(table)
-        let numrows = table.getElementsByTagName('tr').length;
-        if (numrows == 1) {
-            console.log("reached")
-        } else {
-            let index = row.rowIndex;
-            console.log(index)
-            table.deleteRow(index);
-        }
-    }
     </script>
-    
+
     <!-- Navigation -->
     <script type="text/javascript">
-    const electron = require("electron");
-    const { ipcRenderer } = electron;
+        const electron = require("electron");
+        const { ipcRenderer } = electron;
 
-    var ul = document.getElementById('navList');
+        var ul = document.getElementById('navList');
 
-    ul.onclick = function(event) {
-        var compare = event.target.innerText;
+        ul.onclick = function(event) {
+            var compare = event.target.innerText;
 
-        if (compare == "HOME") {
-            console.log('Reached')
-            ipcRenderer.send("which:Window",
-                "window:home");
-        } else if (compare == "PLAN BUDGET") {
-            ipcRenderer.send("which:Window",
-                "window:PlanBudget");
-        } else {
-            console.log("ERROR")
-        }
-    };
+            if (compare == "HOME") {
+                console.log('Reached')
+                ipcRenderer.send("which:Window",
+                    "window:home");
+            } else if (compare == "PLAN BUDGET") {
+                ipcRenderer.send("which:Window",
+                    "window:PlanBudget");
+            } else {
+                console.log("ERROR")
+            }
+        };
     </script>
 
     <!-- This script is for adding new form cards -->
@@ -187,9 +189,15 @@
         let forms = document.getElementById("formSection");
         let section = document.createElement("section");
         section.classList.add("formContent");
+
         let newForm = document.createElement("div");
         newForm.classList.add("formCard");
-        newForm.appendChild(section)
+        newForm.appendChild(section);
+
+        let formtemplate = document.getElementsByTagName("template")[0];
+        let formclone = formtemplate.content.cloneNode(true);
+        section.appendChild(formclone);
+
         let secondLast = forms.children.length - 1;
         forms.insertChildAtIndex(newForm, secondLast);
     }
