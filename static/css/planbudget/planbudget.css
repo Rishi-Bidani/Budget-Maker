@@ -70,7 +70,7 @@ h1[contenteditable]{
 	text-align: center;
 }
 
-.formText{
+.formText, .formAmount{
 	width: 90%;
 	justify-self: center;
 	background-color: var(--floral-white);
@@ -94,3 +94,16 @@ h1[contenteditable]{
 	float: right;
 }
 
+.submitbuttoncontainer{
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.submitbuttoncontainer button{
+	width: 5rem;
+	height: 2rem;
+	margin-bottom: 2rem;
+	cursor: pointer;
+	/*background-color: var(--shamrock-green);*/
+}

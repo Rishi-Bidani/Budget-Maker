@@ -47,6 +47,9 @@
                     <img id="addButton" src="../static/icons/plus.svg" alt="">
                 </div>
             </div>
+            <div class="submitbuttoncontainer">
+                <button id="subformdata">Submit</button>
+            </div>
         </div>
     </div>
     <template>
@@ -74,7 +77,7 @@
                         <input type="text" class="formText">
                     </td>
                     <td>
-                        <input type="text" class="formText">
+                        <input type="number" class="formAmount" value=0 min=0>
                     </td>
                     <td>
                         <button class="delBut" onclick="deleteThisRow(this)">
@@ -87,7 +90,7 @@
                         <input type="text" class="formText">
                     </td>
                     <td>
-                        <input type="text" class="formText">
+                        <input type="number" class="formAmount" value=0 min=0>
                     </td>
                     <td>
                         <button class="delBut" onclick="deleteThisRow(this)">
@@ -125,9 +128,9 @@
         for the user
         ========================================== */
         inputFields[0].value = "Food/ Restaurants";
-        inputFields[2].value = "Groceries";
+        inputFields[1].value = "Groceries";
 
-        createNewRowOfInputs(inputFields[2], "Transport")
+        createNewRowOfInputs(inputFields[1], "Transport")
 
 
     })
@@ -140,8 +143,10 @@
         inputfield1.classList.add("formText");
         inputfield1.value = defText;
 
-        inputfield1.setAttribute("type", "text");
-        inputfield2.classList.add("formText");
+        inputfield2.setAttribute("type", "number");
+        inputfield2.classList.add("formAmount");
+        inputfield2.value = 0;
+        inputfield2.min = 0;
 
         let newrow = document.createElement("tr");
         let newcell1 = document.createElement("td");
@@ -163,6 +168,43 @@
         insertAdjacentElement("afterend", newrow);
     }
     </script>
+    <!-- Collect Form Data -->
+    <script>
+    let subbut = document.getElementById("subformdata");
+
+    subbut.onclick = () => {
+        collectFormData()
+    }
+
+
+    function collectFormData() {
+        let subcat = Array.from(document.getElementsByClassName("formText"));
+        let subamt = Array.from(document.getElementsByClassName("formAmount"));
+
+        returnFormObject(subcat, subamt).then((item)=>{
+            console.log(item);
+            ipcRenderer.send("form:planbudget", item);
+        })
+    }
+
+    async function returnFormObject(arrcat, arramt) {
+        let cat = [];
+        let amt = [];
+        arrcat.forEach((item, index) => {
+            if (item.value.length >= 1) {
+                console.log(item.value, index, arramt[index].value);
+                let tempCat = item.value;
+                let tempAmt = arramt[index].value;
+                cat.push(tempCat);
+                amt.push(tempAmt);
+            } else {}
+        });
+        return {
+            category: cat,
+            amount: amt
+        }
+    }
+    </script>
     <script>
     function deletethisform(button) {
         let formtodelete = button.parentElement.parentElement.parentElement.parentElement;
@@ -181,7 +223,9 @@
                 var cell2 = row.insertCell(1);
                 var cell3 = row.insertCell(2);
                 cell1.innerHTML = "<input type='text'  class='formText'>";
-                cell2.innerHTML = "<input type='text'  class='formText'>";
+
+                cell2.innerHTML = `
+                <input type='number'  class='formAmount' value=0 min=0>`;
                 cell3.innerHTML = `<button class='delBut'
                                         onclick='deleteThisRow(this)'>
                                         <img src='../static/icons/delete.svg'

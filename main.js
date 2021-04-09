@@ -3,8 +3,17 @@ const url = require("url");
 const path = require("path");
 const { Menu } = require("electron/main");
 const { app, BrowserWindow, ipcMain, webContents } = electron;
+const Store = require('./static/js/storage.js');
 
 let windows;
+
+
+const store = new Store({
+  configName: 'formData',
+  defaults: {
+  }
+});
+// store.set("test", "hi");
 
 app.on("ready", function() {
     windows = new BrowserWindow({
@@ -52,4 +61,8 @@ ipcMain.on("which:Window", (e, item) => {
         );
 
     }
+})
+
+ipcMain.on("form:planbudget", (e, item)=>{
+  console.log(item);
 })
