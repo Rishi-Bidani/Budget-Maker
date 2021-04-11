@@ -26,6 +26,9 @@
             <h1>Plan A Budget</h1>
         </div>
         <div class="gridContainer">
+            <div class="submitbuttoncontainer">
+                <h1>Total Amount: <span id="amount">0</span></h1>
+            </div>
             <div id="formSection" class="addPadding addGrid2">
                 <div class="formCard">
                     <section class="formContent">
@@ -178,32 +181,36 @@
 
 
     function collectFormData() {
-        let subcat = Array.from(document.getElementsByClassName("formText"));
-        let subamt = Array.from(document.getElementsByClassName("formAmount"));
+        let formContent = Array.from(document.getElementsByClassName("formContent"));
 
-        returnFormObject(subcat, subamt).then((item)=>{
-            console.log(item);
-            ipcRenderer.send("form:planbudget", item);
-        })
-    }
+        let budgetList = [];
 
-    async function returnFormObject(arrcat, arramt) {
-        let cat = [];
-        let amt = [];
-        arrcat.forEach((item, index) => {
-            if (item.value.length >= 1) {
-                console.log(item.value, index, arramt[index].value);
-                let tempCat = item.value;
-                let tempAmt = arramt[index].value;
-                cat.push(tempCat);
-                amt.push(tempAmt);
-            } else {}
-        });
-        return {
-            category: cat,
-            amount: amt
+        for(let i=0; i<formContent.length; i++){
+            let title = Array.from(formContent[i].getElementsByClassName("formTitle"))[0].innerText;
+
+            let subCategories = Array.from(formContent[i].getElementsByClassName("formText"));
+
+            let amount = Array.from(formContent[i].getElementsByClassName("formAmount"));
+
+            let tempObj = {
+                title: title,
+                subcategories: subCategories.map(item => item.value),
+                amount: amount.map(item => item.value), 
+            };
+            budgetList.push(tempObj);
+
         }
+        console.log(budgetList);
+
+
+        // console.log(returnObj(formContent))
+
+        // returnFormObject(subcat, subamt).then((item) => {
+        //     // console.log(item);
+        //     ipcRenderer.send("form:planbudget", item);
+        // })
     }
+
     </script>
     <script>
     function deletethisform(button) {
@@ -237,8 +244,6 @@
     }
 
     let allDelete = Array.from(document.getElementsByClassName("delBut"));
-
-    // buttonDelete(allDelete);
 
     function deleteThisRow(button) {
         let row = button.parentElement.parentNode;
