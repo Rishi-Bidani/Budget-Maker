@@ -171,21 +171,37 @@
         insertAdjacentElement("afterend", newrow);
     }
     </script>
+    <!-- Find Total -->
+    <script>
+    setInterval(() => {
+        let totalAmount = 0
+
+        let allAmounts = Array.from(document.getElementsByClassName('formAmount'));
+        allAmounts.forEach((item) => {
+            totalAmount += parseFloat(item.value);
+        })
+        console.log(totalAmount);
+        let amountdisplay = document.getElementById("amount");
+        amountdisplay.innerText = totalAmount;
+    }, 2000)
+    </script>
     <!-- Collect Form Data -->
     <script>
     let subbut = document.getElementById("subformdata");
 
     subbut.onclick = () => {
-        collectFormData()
+        collectFormData().then((data) => {
+            ipcRenderer.send("form:planbudget", data);
+        })
     }
 
 
-    function collectFormData() {
+    async function collectFormData() {
         let formContent = Array.from(document.getElementsByClassName("formContent"));
 
         let budgetList = [];
 
-        for(let i=0; i<formContent.length; i++){
+        for (let i = 0; i < formContent.length; i++) {
             let title = Array.from(formContent[i].getElementsByClassName("formTitle"))[0].innerText;
 
             let subCategories = Array.from(formContent[i].getElementsByClassName("formText"));
@@ -195,22 +211,14 @@
             let tempObj = {
                 title: title,
                 subcategories: subCategories.map(item => item.value),
-                amount: amount.map(item => item.value), 
+                amount: amount.map(item => item.value),
             };
             budgetList.push(tempObj);
 
         }
-        console.log(budgetList);
-
-
-        // console.log(returnObj(formContent))
-
-        // returnFormObject(subcat, subamt).then((item) => {
-        //     // console.log(item);
-        //     ipcRenderer.send("form:planbudget", item);
-        // })
+        // console.log(budgetList);
+        return budgetList
     }
-
     </script>
     <script>
     function deletethisform(button) {
