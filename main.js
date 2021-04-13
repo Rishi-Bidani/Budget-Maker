@@ -7,10 +7,10 @@ const Store = require('./static/js/storage.js');
 const userDataPath = (electron.app || electron.remote.app).getPath('userData');
 
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database(path.join(userDataPath, 'planbudget.db'), err=>{
-  if(err){
-    console.log(err);
-  }
+var db = new sqlite3.Database(path.join(userDataPath, 'planbudget.db'), err => {
+    if (err) {
+        console.log(err);
+    }
 });
 
 //SET ENV
@@ -20,7 +20,7 @@ let windows;
 
 try {
     db.serialize(function() {
-        db.run("CREATE TABLE IF NOT EXISTS budgets(id SERIAL PRIMARY KEY, month TEXT, budget)");
+        db.run("CREATE TABLE IF NOT EXISTS budgets(month TEXT, budget TEXT)");
     });
 } catch (e) {
     console.log(e);
@@ -97,14 +97,37 @@ ipcMain.on("which:Window", (e, item) => {
 
 
 ipcMain.on("form:planbudget", (e, item) => {
-    console.log(item);
-    knex("budgets").insert([{
-        month: "jan",
-        budget: JSON.stringify(item)
-    }]).then(() => {})
+    // console.log(item);
+    let today = new Date();
+    let todaydate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 
-    knex.select('budget').from("budgets").then((data) => {
-        console.log(data);
-    })
+    // knex.select('budget').from("budgets").then((data) => {
+    //     console.log(data);
+    // })
+
+    knex.select('month').from('budgets')
+        .where('month', '=', todaydate)
+        .then((data) => {
+            if (data.length >= 1) {
+                knex('budgets')
+                    .where('month', '=', todaydate)
+                    .update({
+                        budget: JSON.stringify(item)
+                    }).then(()=>{})
+            } else {
+                knex("budgets").insert([{
+                    month: todaydate,
+                    budget: JSON.stringify(item)
+                }]).then(() => {})
+            }
+        })
+
+    // knex('budgets').max('month', { as: 'month' }).then((maxmonth) => {
+    //     knex('budgets').where({
+    //         month: maxmonth[0].month
+    //     }).select('budget').then((data) => {
+    //         console.log(data)
+    //     })
+    // })
 
 })
