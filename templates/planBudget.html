@@ -178,7 +178,9 @@
 
         let allAmounts = Array.from(document.getElementsByClassName('formAmount'));
         allAmounts.forEach((item) => {
-            totalAmount += parseFloat(item.value);
+            // Convert any number less than 1 to 0, to avoid NaN
+            val = item.value >=1 ? item.value : item.value = 0;
+            totalAmount += parseFloat(val);
         })
         console.log(totalAmount);
         let amountdisplay = document.getElementById("amount");
