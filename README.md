@@ -3,7 +3,20 @@ This is a budget managing software which will allow you to plan out and manage y
 
 <br />
 
+## Requirements for running in development mode
+- nodejs
+- yarn (can be installed with npm)
 
+
+## Setup project - for development
+- Clone/ Download the project
+- Install dependencies from package.json (use yarn)
+```
+yarn install
+```
+- run ```yarn start```
+
+<br />
 
 ## Credits for the icons used in the application
 
