@@ -39,13 +39,17 @@
                     <img src="../static/icons/money-bag.svg" alt="">
                     <dl>
                         <dt>Total Budget</dt>
-                        <dd>$...</dd>
+                        <dd>$<span id="total"></span></dd>
                         <dt>Total Remaining</dt>
-                        <dd>$...</dd>
+                        <dd>$<span id="remaining"></span></dd>
                     </dl>
                 </div>
                 <div class="card cardtype3">
                     <img src="../static/icons/economic.svg" alt="">
+                    <dl>
+                        <dt>Total Savings</dt>
+                        <dd>$</dd>
+                    </dl>
                 </div>
                 <div class="card cardtype4"></div>
                 <div class="card cardtype5"></div>
@@ -87,7 +91,13 @@
         document.getElementById("getMonth").innerText = data.month;
         document.getElementById("date")
             .innerText = data.latestMonth;
+    });
+
+    ipcRenderer.on("item:budgetData", (e,data)=>{
+        document.getElementById("total").innerText = data.total;
+        document.getElementById("remaining").innerText = data.remaining;
     })
+
     </script>
 </body>
 

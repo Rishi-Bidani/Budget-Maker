@@ -193,7 +193,11 @@
 
     subbut.onclick = () => {
         collectFormData().then((data) => {
-            ipcRenderer.send("form:planbudget", data);
+            totalAmount = document.getElementById("amount").innerText;
+            ipcRenderer.send("form:planbudget", {
+                bud:data,
+                total: totalAmount,
+            });
         })
     }
 

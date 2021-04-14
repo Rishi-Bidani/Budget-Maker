@@ -20,7 +20,7 @@ let windows;
 
 try {
     db.serialize(function() {
-        db.run("CREATE TABLE IF NOT EXISTS budgets(month TEXT, budget TEXT)");
+        db.run("CREATE TABLE IF NOT EXISTS budgets(month TEXT, budget TEXT, total INTEGER)");
     });
 } catch (e) {
     console.log(e);
@@ -46,6 +46,16 @@ const configStore = new Store({
         ]
     }
 });
+
+const planBudgetStore = new Store({
+    configName: 'budgetData',
+    defaults: {
+        totalBudget: 0,
+        totalRemaining: 0,
+    }
+})
+planBudgetStore.set()
+
 let configStorePath = path.join(userDataPath, "configState.json");
 // store.set("databaseCreated", );
 
@@ -68,8 +78,7 @@ app.on("ready", function() {
                 if (fs.existsSync(configStorePath)) {
                     if (configStore.get("latestMonth") != maxmonth[0].month) {
                         configStore.set("latestMonth", maxmonth[0].month)
-                    } else {
-                    }
+                    } else {}
                 } else {
                     configStore.set("latestMonth", maxmonth[0].month)
                 }
@@ -86,6 +95,12 @@ app.on("ready", function() {
             }
 
         );
+    })
+    windows.webContents.on("did-finish-load", () => {
+        windows.webContents.send("item:budgetData", {
+            total: planBudgetStore.get("totalBudget"),
+            remaining: planBudgetStore.get("totalRemaining")
+        })
     })
     windows.maximize();
     windows.loadURL(
@@ -109,6 +124,12 @@ ipcMain.on("which:Window", (e, item) => {
             windows.webContents.send("item:whichMonth", {
                 latestMonth: configStore.get("latestMonth"),
                 month: configStore.get("monthsList")[date.getMonth()]
+            })
+            windows.webContents.on("did-finish-load", () => {
+                windows.webContents.send("item:budgetData", {
+                    total: planBudgetStore.get("totalBudget"),
+                    remaining: planBudgetStore.get("totalRemaining")
+                })
             })
         });
         windows.loadURL(
@@ -135,7 +156,7 @@ ipcMain.on("which:Window", (e, item) => {
 ipcMain.on("form:planbudget", (e, item) => {
     // console.log(item);
     let today = new Date();
-    let todaydate = today.getFullYear() + '-' + (today.getMonth()+1) //+ '-' + today.getDate();
+    let todaydate = today.getFullYear() + '-' + (today.getMonth() + 1) //+ '-' + today.getDate();
 
     // knex.select('budget').from("budgets").then((data) => {
     //     console.log(data);
@@ -150,13 +171,19 @@ ipcMain.on("form:planbudget", (e, item) => {
                 knex('budgets')
                     .where('month', '=', todaydate)
                     .update({
-                        budget: JSON.stringify(item)
-                    }).then(() => {})
+                        budget: JSON.stringify(item.bud),
+                        total: item.total
+                    }).then(() => {
+                      planBudgetStore.set("totalBudget", item.total)
+                    })
             } else {
                 knex("budgets").insert([{
                     month: todaydate,
-                    budget: JSON.stringify(item)
-                }]).then(() => {})
+                    budget: JSON.stringify(item.bud),
+                    total: item.total,
+                }]).then(() => {
+                  planBudgetStore.set("totalBudget", item.total)
+                })
             }
         })
 
