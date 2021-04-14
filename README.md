@@ -1,20 +1,36 @@
 # Budget-Maker
-This is a budget managing software which will allow you to plan out and manage your expenses
+This is a budget managing software which will allow you to plan out and manage your expenses.
+
 
 <br />
 
-## Requirements for running in development mode
+## Planned Features (Might Change) :rocket:
+- Plan a budget for the month(month will be detected automatically)
+	- Any amount you save will go into your savings
+- Add Expenses
+- Plan A trip (Plan out the cost and expenses for a trip)
+- Add a project 
+	- Planning to buy something expensive? Add a project to start
+	  saving monthly, this will be calculated separately from plan
+	  a budget.
+- View past Details
+
+
+<br />
+
+## Requirements for running in development mode :key:
 - nodejs
 - yarn (can be installed with npm)
 
 
-## Setup project - for development
+## Setup project - for development :computer:
 - Clone/ Download the project
 - Install dependencies from package.json (use yarn)
 ```
 yarn install
 ```
-- run ```yarn start```
+- run 
+```yarn start```
 
 <br />
 
