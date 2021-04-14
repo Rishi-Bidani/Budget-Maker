@@ -28,6 +28,14 @@
         <div class="gridContainer">
             <div class="addPadding addGrid">
                 <div class="card cardtype1">
+                    <img src="../static/icons/calendar.svg" alt="">
+                    <dl>
+                        <dt>Budget For</dt>
+                        <dd id="getMonth"></dd>
+                        <dd id="date"></dd>
+                    </dl>
+                </div>
+                <div class="card cardtype2">
                     <img src="../static/icons/money-bag.svg" alt="">
                     <dl>
                         <dt>Total Budget</dt>
@@ -36,10 +44,9 @@
                         <dd>$...</dd>
                     </dl>
                 </div>
-                <div class="card cardtype2">
+                <div class="card cardtype3">
                     <img src="../static/icons/economic.svg" alt="">
                 </div>
-                <div class="card cardtype3"></div>
                 <div class="card cardtype4"></div>
                 <div class="card cardtype5"></div>
                 <div class="card cardtype6"></div>
@@ -53,6 +60,7 @@
             </div>
         </div>
     </div>
+    <!-- Navigation -->
     <script type="text/javascript">
     const electron = require("electron");
     const { ipcRenderer } = electron;
@@ -73,6 +81,13 @@
             console.log("ERROR")
         }
     };
+    </script>
+    <script type="text/javascript">
+    ipcRenderer.on("item:whichMonth", (e, data) => {
+        document.getElementById("getMonth").innerText = data.month;
+        document.getElementById("date")
+            .innerText = data.latestMonth;
+    })
     </script>
 </body>
 

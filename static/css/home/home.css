@@ -99,3 +99,8 @@ dl dt {
 dl dd {
     padding-bottom: 0.5rem;
 }
+
+#getMonth {
+    font-weight: bolder;
+    font-size: 2rem;
+}

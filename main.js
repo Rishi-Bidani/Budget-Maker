@@ -5,7 +5,7 @@ const { Menu } = require("electron/main");
 const { app, BrowserWindow, ipcMain, webContents } = electron;
 const Store = require('./static/js/storage.js');
 const userDataPath = (electron.app || electron.remote.app).getPath('userData');
-
+const fs = require('fs');
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database(path.join(userDataPath, 'planbudget.db'), err => {
     if (err) {
@@ -35,15 +35,19 @@ knex = require('knex')({
     },
     useNullAsDefault: true,
 });
-// console.log(path.join(userDataPath, "planbudget.sqlite"))
 
-
-const store = new Store({
+const configStore = new Store({
     configName: 'configState',
-    defaults: {}
+    defaults: {
+        monthsList: [
+            "January", "February", "March", "April", "May",
+            "June", "July", "August", "September", "October",
+            "November", "December"
+        ]
+    }
 });
+let configStorePath = path.join(userDataPath, "configState.json");
 // store.set("databaseCreated", );
-
 
 app.on("ready", function() {
     windows = new BrowserWindow({
@@ -57,7 +61,32 @@ app.on("ready", function() {
             enableRemoteModule: true,
         },
     });
+    windows.webContents.on("did-finish-load", () => {
+        // Check which month the budget is for
+        knex('budgets').max('month', { as: 'month' }).then((maxmonth) => {
+            try {
+                if (fs.existsSync(configStorePath)) {
+                    if (configStore.get("latestMonth") != maxmonth[0].month) {
+                        configStore.set("latestMonth", maxmonth[0].month)
+                    } else {
+                    }
+                } else {
+                    configStore.set("latestMonth", maxmonth[0].month)
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        })
+    });
+    windows.webContents.on("did-finish-load", () => {
+        let date = new Date();
+        windows.webContents.send("item:whichMonth", {
+                latestMonth: configStore.get("latestMonth"),
+                month: configStore.get("monthsList")[date.getMonth()]
+            }
 
+        );
+    })
     windows.maximize();
     windows.loadURL(
         url.format({
@@ -75,6 +104,13 @@ app.on("ready", function() {
 
 ipcMain.on("which:Window", (e, item) => {
     if (item == "window:home") {
+        windows.webContents.on("did-finish-load", () => {
+            let date = new Date();
+            windows.webContents.send("item:whichMonth", {
+                latestMonth: configStore.get("latestMonth"),
+                month: configStore.get("monthsList")[date.getMonth()]
+            })
+        });
         windows.loadURL(
             url.format({
                 pathname: path.join(__dirname, "templates/home.html"),
@@ -99,12 +135,14 @@ ipcMain.on("which:Window", (e, item) => {
 ipcMain.on("form:planbudget", (e, item) => {
     // console.log(item);
     let today = new Date();
-    let todaydate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    let todaydate = today.getFullYear() + '-' + (today.getMonth()+1) //+ '-' + today.getDate();
 
     // knex.select('budget').from("budgets").then((data) => {
     //     console.log(data);
     // })
 
+    // If u enter another plan on the same day it will update 
+    // the old plan instead of creating a new one
     knex.select('month').from('budgets')
         .where('month', '=', todaydate)
         .then((data) => {
@@ -113,7 +151,7 @@ ipcMain.on("form:planbudget", (e, item) => {
                     .where('month', '=', todaydate)
                     .update({
                         budget: JSON.stringify(item)
-                    }).then(()=>{})
+                    }).then(() => {})
             } else {
                 knex("budgets").insert([{
                     month: todaydate,
