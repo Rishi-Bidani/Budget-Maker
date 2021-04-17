@@ -105,211 +105,218 @@
         </table>
     </template>
     <script>
-    let tabFormTemp = document.getElementsByTagName("template")[0];
+        let tabFormTemp = document.getElementsByTagName("template")[0];
 
-    let allForms = Array.from(document.getElementsByClassName("formContent"));
+        let allForms = Array.from(document.getElementsByClassName("formContent"));
 
-    async function usetemplate() {
-        for (let i = 0; i < allForms.length; i++) {
-            let formclone = tabFormTemp.content.cloneNode(true);
-            allForms[i].appendChild(formclone);
+        async function usetemplate() {
+            for (let i = 0; i < allForms.length; i++) {
+                let formclone = tabFormTemp.content.cloneNode(true);
+                allForms[i].appendChild(formclone);
+            }
         }
-    }
 
-    usetemplate().then(() => {
-        let allTitles = Array.from(document.getElementsByClassName("formTitle"));
-        console.log(allTitles);
-        allTitles[0].innerText = "Essentials"
-        allTitles[1].innerText = "Non Essentials";
-        allTitles[2].innerText = "Entertainment";
-        allTitles[3].innerText = "Emergency";
-    }).then(() => {
-        let inputFields = document.getElementsByClassName("formText");
-        console.log(inputFields);
-        /* =======================================
-        Setting up a template of default input values
-        for the user
-        ========================================== */
-        inputFields[0].value = "Food/ Restaurants";
-        inputFields[1].value = "Groceries";
+        usetemplate().then(() => {
+            let allTitles = Array.from(document.getElementsByClassName("formTitle"));
+            console.log(allTitles);
+            allTitles[0].innerText = "Essentials"
+            allTitles[1].innerText = "Non Essentials";
+            allTitles[2].innerText = "Entertainment";
+            allTitles[3].innerText = "Emergency";
+        }).then(() => {
+            let inputFields = document.getElementsByClassName("formText");
+            console.log(inputFields);
+            /* =======================================
+            Setting up a template of default input values
+            for the user
+            ========================================== */
+            inputFields[0].value = "Food/ Restaurants";
+            inputFields[1].value = "Groceries";
 
-        createNewRowOfInputs(inputFields[1], "Transport")
+            createNewRowOfInputs(inputFields[1], "Transport")
 
 
-    })
+        })
 
-    function createNewRowOfInputs(nearInp, defText) {
-        var inputfield1 = document.createElement("INPUT");
-        var inputfield2 = document.createElement("INPUT");
+        function createNewRowOfInputs(nearInp, defText) {
+            var inputfield1 = document.createElement("INPUT");
+            var inputfield2 = document.createElement("INPUT");
 
-        inputfield1.setAttribute("type", "text");
-        inputfield1.classList.add("formText");
-        inputfield1.value = defText;
+            inputfield1.setAttribute("type", "text");
+            inputfield1.classList.add("formText");
+            inputfield1.value = defText;
 
-        inputfield2.setAttribute("type", "number");
-        inputfield2.classList.add("formAmount");
-        inputfield2.value = 0;
-        inputfield2.min = 0;
+            inputfield2.setAttribute("type", "number");
+            inputfield2.classList.add("formAmount");
+            inputfield2.value = 0;
+            inputfield2.min = 0;
 
-        let newrow = document.createElement("tr");
-        let newcell1 = document.createElement("td");
-        let newcell2 = document.createElement("td");
-        let newcell3 = document.createElement("td");
+            let newrow = document.createElement("tr");
+            let newcell1 = document.createElement("td");
+            let newcell2 = document.createElement("td");
+            let newcell3 = document.createElement("td");
 
-        newcell1.appendChild(inputfield1);
-        newcell2.appendChild(inputfield2);
-        newcell3.innerHTML = `<button class='delBut'
+            newcell1.appendChild(inputfield1);
+            newcell2.appendChild(inputfield2);
+            newcell3.innerHTML = `<button class='delBut'
                                         onclick='deleteThisRow(this)'>
                                         <img src='../static/icons/delete.svg'
                                              class='delIcon' alt=''>
                                     </button>`
-        newrow.appendChild(newcell1);
-        newrow.appendChild(newcell2);
-        newrow.appendChild(newcell3);
+            newrow.appendChild(newcell1);
+            newrow.appendChild(newcell2);
+            newrow.appendChild(newcell3);
 
-        nearInp.parentElement.parentElement.
-        insertAdjacentElement("afterend", newrow);
-    }
+            nearInp.parentElement.parentElement.
+            insertAdjacentElement("afterend", newrow);
+        }
     </script>
+
     <!-- Find Total -->
     <script>
-    setInterval(() => {
-        let totalAmount = 0
+        setInterval(() => {
+            let totalAmount = 0
 
-        let allAmounts = Array.from(document.getElementsByClassName('formAmount'));
-        allAmounts.forEach((item) => {
-            // Convert any number less than 1 to 0, to avoid NaN
-            val = item.value >=1 ? item.value : item.value = 0;
-            totalAmount += parseFloat(val);
-        })
-        console.log(totalAmount);
-        let amountdisplay = document.getElementById("amount");
-        amountdisplay.innerText = totalAmount;
-    }, 2000)
+            let allAmounts = Array.from(document.getElementsByClassName('formAmount'));
+            allAmounts.forEach((item) => {
+                // Convert any number less than 1 to 0, to avoid NaN
+                val = item.value >= 1 ? item.value : item.value = 0;
+                totalAmount += parseFloat(val);
+            })
+            console.log(totalAmount);
+            let amountdisplay = document.getElementById("amount");
+            amountdisplay.innerText = totalAmount;
+        }, 2000)
     </script>
+
     <!-- Collect Form Data -->
     <script>
-    let subbut = document.getElementById("subformdata");
+        let subbut = document.getElementById("subformdata");
 
-    subbut.onclick = () => {
-        collectFormData().then((data) => {
-            totalAmount = document.getElementById("amount").innerText;
-            ipcRenderer.send("form:planbudget", {
-                bud:data,
-                total: totalAmount,
-            });
-        })
-    }
-
-
-    async function collectFormData() {
-        let formContent = Array.from(document.getElementsByClassName("formContent"));
-
-        let budgetList = [];
-
-        for (let i = 0; i < formContent.length; i++) {
-            let title = Array.from(formContent[i].getElementsByClassName("formTitle"))[0].innerText;
-
-            let subCategories = Array.from(formContent[i].getElementsByClassName("formText"));
-
-            let amount = Array.from(formContent[i].getElementsByClassName("formAmount"));
-
-            let tempObj = {
-                title: title,
-                subcategories: subCategories.map(item => item.value),
-                amount: amount.map(item => item.value),
-            };
-            budgetList.push(tempObj);
-
+        subbut.onclick = () => {
+            collectFormData().then((data) => {
+                totalAmount = document.getElementById("amount").innerText;
+                ipcRenderer.send("form:planbudget", {
+                    bud: data,
+                    total: totalAmount,
+                });
+            })
         }
-        // console.log(budgetList);
-        return budgetList
-    }
-    </script>
-    <script>
-    function deletethisform(button) {
-        let formtodelete = button.parentElement.parentElement.parentElement.parentElement;
-        console.log(formtodelete);
-        formtodelete.remove();
-    }
-    </script>
-    <script type="text/javascript">
-    let formtable = Array.from(document.getElementsByClassName("formTable"));
-    for (let i = 0; i < formtable.length; i++) {
-        formtable[i].addEventListener("keydown", (event) => {
-            if (event.code == "Enter") {
-                console.log(event.code);
-                let row = formtable[i].insertRow(-1);
-                var cell1 = row.insertCell(0);
-                var cell2 = row.insertCell(1);
-                var cell3 = row.insertCell(2);
-                cell1.innerHTML = "<input type='text'  class='formText'>";
 
-                cell2.innerHTML = `
+
+        async function collectFormData() {
+            let formContent = Array.from(document.getElementsByClassName("formContent"));
+
+            let budgetList = [];
+
+            for (let i = 0; i < formContent.length; i++) {
+                let title = Array.from(formContent[i].getElementsByClassName("formTitle"))[0].innerText;
+
+                let subCategories = Array.from(formContent[i].getElementsByClassName("formText"));
+
+                let amount = Array.from(formContent[i].getElementsByClassName("formAmount"));
+
+                let tempObj = {
+                    title: title,
+                    subcategories: subCategories.map(item => item.value),
+                    amount: amount.map(item => item.value),
+                };
+                budgetList.push(tempObj);
+
+            }
+            // console.log(budgetList);
+            return budgetList
+        }
+    </script>
+
+    <script>
+        function deletethisform(button) {
+            let formtodelete = button.parentElement.parentElement.parentElement.parentElement;
+            console.log(formtodelete);
+            formtodelete.remove();
+        }
+    </script>
+
+    <script type="text/javascript">
+        let formtable = Array.from(document.getElementsByClassName("formTable"));
+        for (let i = 0; i < formtable.length; i++) {
+            formtable[i].addEventListener("keydown", (event) => {
+                if (event.code == "Enter") {
+                    console.log(event.code);
+                    let row = formtable[i].insertRow(-1);
+                    var cell1 = row.insertCell(0);
+                    var cell2 = row.insertCell(1);
+                    var cell3 = row.insertCell(2);
+                    cell1.innerHTML = "<input type='text'  class='formText'>";
+
+                    cell2.innerHTML = `
                 <input type='number'  class='formAmount' value=0 min=0>`;
-                cell3.innerHTML = `<button class='delBut'
+                    cell3.innerHTML = `<button class='delBut'
                                         onclick='deleteThisRow(this)'>
                                         <img src='../static/icons/delete.svg'
                                              class='delIcon' alt=''>
                                     </button>`
 
-            }
-        })
-    }
-
-    let allDelete = Array.from(document.getElementsByClassName("delBut"));
-
-    function deleteThisRow(button) {
-        let row = button.parentElement.parentNode;
-        console.log(row);
-        let table = row.parentElement.parentNode;
-        console.log(table)
-        let numrows = table.getElementsByTagName('tr').length;
-        if (numrows == 1) {
-            console.log("reached")
-        } else {
-            let index = row.rowIndex;
-            console.log(index)
-            table.deleteRow(index);
+                }
+            })
         }
-    }
+
+        let allDelete = Array.from(document.getElementsByClassName("delBut"));
+
+        function deleteThisRow(button) {
+            let row = button.parentElement.parentNode;
+            console.log(row);
+            let table = row.parentElement.parentNode;
+            console.log(table)
+            let numrows = table.getElementsByTagName('tr').length;
+            if (numrows == 1) {
+                console.log("reached")
+            } else {
+                let index = row.rowIndex;
+                console.log(index)
+                table.deleteRow(index);
+            }
+        }
     </script>
-    <!-- Navigation -->
-    <script type="text/javascript" src="../static/js/navigation.js"></script>
+    <!-- Import electron stuff -->
     <script type="text/javascript">
-    const electron = require("electron");
-    const { ipcRenderer } = electron;
+        const electron = require("electron");
+        const { ipcRenderer } = electron;
     </script>
     <!-- This script is for adding new form cards -->
     <script type="text/javascript">
-    let addButton = document.getElementById("addButton");
-    addButton.onclick = () => {
-        console.log("clicked")
-        let forms = document.getElementById("formSection");
-        let section = document.createElement("section");
-        section.classList.add("formContent");
+        let addButton = document.getElementById("addButton");
+        addButton.onclick = () => {
+            console.log("clicked")
+            let forms = document.getElementById("formSection");
+            let section = document.createElement("section");
+            section.classList.add("formContent");
 
-        let newForm = document.createElement("div");
-        newForm.classList.add("formCard");
-        newForm.appendChild(section);
+            let newForm = document.createElement("div");
+            newForm.classList.add("formCard");
+            newForm.appendChild(section);
 
-        let formtemplate = document.getElementsByTagName("template")[0];
-        let formclone = formtemplate.content.cloneNode(true);
-        section.appendChild(formclone);
+            let formtemplate = document.getElementsByTagName("template")[0];
+            let formclone = formtemplate.content.cloneNode(true);
+            section.appendChild(formclone);
 
-        let secondLast = forms.children.length - 1;
-        forms.insertChildAtIndex(newForm, secondLast);
-    }
-
-    Element.prototype.insertChildAtIndex = function(child, index) {
-        if (!index) { index = 0 }
-        if (index >= this.children.length) {
-            this.appendChild(child)
-        } else {
-            this.insertBefore(child, this.children[index])
+            let secondLast = forms.children.length - 1;
+            forms.insertChildAtIndex(newForm, secondLast);
         }
-    }
+
+        Element.prototype.insertChildAtIndex = function(child, index) {
+            if (!index) { index = 0 }
+            if (index >= this.children.length) {
+                this.appendChild(child)
+            } else {
+                this.insertBefore(child, this.children[index])
+            }
+        }
     </script>
+    
+    <!-- Navigation -->
+    <script type="text/javascript" src="../static/js/navigation.js"></script>
+
 </body>
 
 </html>

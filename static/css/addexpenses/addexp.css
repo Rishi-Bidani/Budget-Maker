@@ -1,0 +1,10 @@
+.addGridExpenses{
+	display: grid;
+	grid-template-columns: 3fr 1fr;
+	grid-gap: 5rem;
+}
+.gridtest{
+	height:10rem;
+	/*width: 95%;*/
+	background-color: blue;
+}
