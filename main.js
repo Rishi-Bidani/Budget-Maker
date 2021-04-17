@@ -71,6 +71,7 @@ app.on("ready", function() {
             enableRemoteModule: true,
         },
     });
+    // windows.setMenu(null);
     windows.webContents.on("did-finish-load", () => {
         // Check which month the budget is for
         knex('budgets').max('month', { as: 'month' }).then((maxmonth) => {
@@ -170,7 +171,6 @@ ipcMain.on("which:Window", (e, item) => {
             }))
     }
 })
-
 
 ipcMain.on("form:planbudget", (e, item) => {
     // console.log(item);

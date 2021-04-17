@@ -8,7 +8,8 @@
     height: 10rem;
     width: 90%;
     padding: 1rem;
-    background-color: var(--cadet-blue);
+    background-color: var(--honeydew);
+    border-radius: 1.5rem;
 }
 
 .expenseGrid:nth-child(1){
@@ -18,4 +19,9 @@
 	margin-top: auto;
 	margin-bottom: auto;
 	display: flex;
+	flex-direction: column;
+}
+.mainCat{
+	/*padding-top: 0.5rem;*/
+	padding-bottom: 1rem;
 }
