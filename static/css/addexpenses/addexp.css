@@ -1,10 +1,21 @@
-.addGridExpenses{
-	display: grid;
-	grid-template-columns: 3fr 1fr;
-	grid-gap: 5rem;
+.addGridExpenses {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-gap: 2rem;
 }
-.gridtest{
-	height:10rem;
-	/*width: 95%;*/
-	background-color: blue;
+
+.expenseGrid {
+    height: 10rem;
+    width: 90%;
+    padding: 1rem;
+    background-color: var(--cadet-blue);
+}
+
+.expenseGrid:nth-child(1){
+	height: 30rem;
+}
+.expenseGrid:nth-child(even){
+	margin-top: auto;
+	margin-bottom: auto;
+	display: flex;
 }

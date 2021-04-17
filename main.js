@@ -149,11 +149,25 @@ ipcMain.on("which:Window", (e, item) => {
             })
         );
 
-    } else if(item == "window:AddExpenses"){
-      windows.loadURL(
-        url.format({
-          pathname: path.join(__dirname, "templates/addExpenses.html")
-        }))
+    } else if (item == "window:AddExpenses") {
+        let today = new Date();
+        let todaydate = today.getFullYear() + '-' + (today.getMonth() + 1);
+        knex
+            .select('budget')
+            .from('budgets')
+            .where('month', '=', todaydate).then((budget) => {
+                console.log(budget)
+                windows.webContents.on("did-finish-load", () => {
+                    windows.webContents.send("json:monthlyBudget", budget)
+
+                })
+
+            })
+
+        windows.loadURL(
+            url.format({
+                pathname: path.join(__dirname, "templates/addExpenses.html")
+            }))
     }
 })
 
@@ -179,7 +193,7 @@ ipcMain.on("form:planbudget", (e, item) => {
                         budget: JSON.stringify(item.bud),
                         total: item.total
                     }).then(() => {
-                      planBudgetStore.set("totalBudget", item.total)
+                        planBudgetStore.set("totalBudget", item.total)
                     })
             } else {
                 knex("budgets").insert([{
@@ -187,7 +201,7 @@ ipcMain.on("form:planbudget", (e, item) => {
                     budget: JSON.stringify(item.bud),
                     total: item.total,
                 }]).then(() => {
-                  planBudgetStore.set("totalBudget", item.total)
+                    planBudgetStore.set("totalBudget", item.total)
                 })
             }
         })
