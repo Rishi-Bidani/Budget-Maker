@@ -275,26 +275,10 @@
     }
     </script>
     <!-- Navigation -->
+    <script type="text/javascript" src="../static/js/navigation.js"></script>
     <script type="text/javascript">
     const electron = require("electron");
     const { ipcRenderer } = electron;
-
-    var ul = document.getElementById('navList');
-
-    ul.onclick = function(event) {
-        var compare = event.target.innerText;
-
-        if (compare == "HOME") {
-            console.log('Reached')
-            ipcRenderer.send("which:Window",
-                "window:home");
-        } else if (compare == "PLAN BUDGET") {
-            ipcRenderer.send("which:Window",
-                "window:PlanBudget");
-        } else {
-            console.log("ERROR")
-        }
-    };
     </script>
     <!-- This script is for adding new form cards -->
     <script type="text/javascript">

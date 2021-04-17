@@ -7,7 +7,7 @@ This is a budget managing software which will allow you to plan out and manage y
 > **1. [Planned Features](#features)**\
 > **2. [Requirements for running in development mode](#requirements)**\
 > **3. [Setup project - for development](#setup)**\
-> **4. [Credits for the icons used in the application](#credits)**\
+> **4. [Credits for the icons used in the application](#credits)**
 
 
 <br />

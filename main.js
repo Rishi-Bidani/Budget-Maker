@@ -149,6 +149,11 @@ ipcMain.on("which:Window", (e, item) => {
             })
         );
 
+    } else if(item == "window:AddExpenses"){
+      windows.loadURL(
+        url.format({
+          pathname: path.join(__dirname, "templates/addExpenses.html")
+        }))
     }
 })
 

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Budget Maker</title>
+</head>
+<link rel="stylesheet" href="../static/css/main.css">
+
+<body>
+    <nav class="sidebar">
+        <ul id="navList">
+            <li class="navitem">Home</li>
+            <li class="navitem">
+                Plan Budget
+            </li>
+            <li class="navitem navactive">Add Expenses</li>
+            <li class="navitem">Plan a Trip</li>
+            <li class="navitem">Add a project</li>
+            <li class="navitem">View Past Details</li>
+        </ul>
+    </nav>
+    <div class="mainPage">
+        <div class="navColorBar">
+            <h1>Add Expenses</h1>
+        </div>
+        <div class="gridContainer">
+            <div class="addPadding addGrid">
+            </div>
+        </div>
+    </div>
+    <script src="../static/js/navigation.js"></script>
+    <script>
+    	const electron = require("electron");
+    	const {ipcRenderer} = electron;
+    </script>
+</body>
+
+</html>
