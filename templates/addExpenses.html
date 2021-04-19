@@ -39,7 +39,7 @@
                             <td>Amount</td>
                         </tr>
                     </thead>
-                    <tbody class="auto-index">
+                    <tbody class="auto-index" id="expensesTable">
                         <tr class="add_expense_row">
                             <td class="serialno"></td>
                             <td>
@@ -50,12 +50,12 @@
                             </td>
                             <td><input type="date" class="datepicker"></td>
                             <td>
-                            	<select>
-                            		<option>Cash</option>
-                            		<option>Credit Card</option>
-                            		<option>Debit Card</option>
-                            		<option>Online Payment</option>
-                            	</select>
+                                <select>
+                                    <option>Cash</option>
+                                    <option>Credit Card</option>
+                                    <option>Debit Card</option>
+                                    <option>Online Payment</option>
+                                </select>
                             </td>
                             <td>
                                 <textarea name="description" id="" cols="40" rows="8"></textarea>
@@ -74,12 +74,12 @@
                             </td>
                             <td><input type="date" class="datepicker"></td>
                             <td>
-                            	<select>
-                            		<option>Cash</option>
-                            		<option>Credit Card</option>
-                            		<option>Debit Card</option>
-                            		<option>Online Payment</option>
-                            	</select>
+                                <select>
+                                    <option>Cash</option>
+                                    <option>Credit Card</option>
+                                    <option>Debit Card</option>
+                                    <option>Online Payment</option>
+                                </select>
                             </td>
                             <td>
                                 <textarea name="description" id="" cols="40" rows="8"></textarea>
@@ -106,7 +106,7 @@
         <tr>
             <td class="serialno"></td>
             <td>
-                <select name="categories"></select>
+                <select name="categories" class="cats"></select>
             </td>
             <td>
                 <select name="subCategories"></select>
@@ -193,6 +193,51 @@
             for (let i = 0; i < arrDates.length; i++) {
                 arrDates[i].valueAsDate = new Date();
             }
+        }
+    </script>
+    <script>
+        ipcRenderer.on("json:monthlyBudget", (e, data) => {
+            let arrangeData = new ArrangeCategories(data, "budget");
+            // console.log(arrangeData.returnTilesAndSubTitles())
+            let catAndSub = arrangeData.returnTilesAndSubTitles();
+            console.log(catAndSub)
+
+            for (i = 0; i < 2; i++) {
+                let rowtemplate = document.getElementsByTagName("template")[0];
+                let rowclone = rowtemplate.content.cloneNode(true);
+
+                // let getcats = Array.from(rowtemplate.getElementsByClassName("cats"));
+                let getcats = rowclone.getElementsByTagName("select")[0];
+                console.log(getcats)
+                for (let j = 0; j < Object.keys(catAndSub).length; j++) {
+                    let option = document.createElement("object");
+
+                    option.innerText = Object.keys(catAndSub)[j];
+                    console.log(getcats)
+                    getcats.appendChild(option);
+
+                }
+
+                let tbody = document.getElementById("expensesTable");
+                rowclone.appendChild(tbody)
+            }
+        })
+
+        class ArrangeCategories {
+            constructor(data, jsonKey) {
+                this.data = data;
+                this.masterData = JSON.parse(data[0][jsonKey]);
+            }
+            returnTilesAndSubTitles() {
+                let ObjToReturn = new Object();
+                for (let i = 0; i < this.masterData.length; i++) {
+                    ObjToReturn[`${this.masterData[i]["title"]}`] =
+                        this.masterData[i]["subcategories"]
+                }
+
+                return ObjToReturn
+            }
+
         }
     </script>
 </body>
