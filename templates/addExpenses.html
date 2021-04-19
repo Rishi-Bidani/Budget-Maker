@@ -34,6 +34,7 @@
                             <td>Category</td>
                             <td>Sub-Category</td>
                             <td>Date</td>
+                            <td>Payment Method</td>
                             <td>Description</td>
                             <td>Amount</td>
                         </tr>
@@ -41,19 +42,51 @@
                     <tbody class="auto-index">
                         <tr class="add_expense_row">
                             <td class="serialno"></td>
-                            <td>srgd</td>
-                            <td>srdg</td>
-                            <td>srgs</td>
-                            <td>ser</td>
-                            <td></td>
+                            <td>
+                                <select name="categories"></select>
+                            </td>
+                            <td>
+                                <select name="subCategories"></select>
+                            </td>
+                            <td><input type="date" class="datepicker"></td>
+                            <td>
+                            	<select>
+                            		<option>Cash</option>
+                            		<option>Credit Card</option>
+                            		<option>Debit Card</option>
+                            		<option>Online Payment</option>
+                            	</select>
+                            </td>
+                            <td>
+                                <textarea name="description" id="" cols="40" rows="8"></textarea>
+                            </td>
+                            <td>
+                                <input type="number" min="0" value="0">
+                            </td>
                         </tr>
                         <tr class="add_expense_row">
                             <td class="serialno"></td>
-                            <td>srgd</td>
-                            <td>srdg</td>
-                            <td>srgs</td>
-                            <td>ser</td>
-                            <td></td>
+                            <td>
+                                <select name="categories"></select>
+                            </td>
+                            <td>
+                                <select name="subCategories"></select>
+                            </td>
+                            <td><input type="date" class="datepicker"></td>
+                            <td>
+                            	<select>
+                            		<option>Cash</option>
+                            		<option>Credit Card</option>
+                            		<option>Debit Card</option>
+                            		<option>Online Payment</option>
+                            	</select>
+                            </td>
+                            <td>
+                                <textarea name="description" id="" cols="40" rows="8"></textarea>
+                            </td>
+                            <td>
+                                <input type="number" min="0" value="0">
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -69,6 +102,25 @@
         </div>
     </template>
  -->
+    <template>
+        <tr>
+            <td class="serialno"></td>
+            <td>
+                <select name="categories"></select>
+            </td>
+            <td>
+                <select name="subCategories"></select>
+            </td>
+            <td><input type="date" class="datepicker"></td>
+            <td></td>
+            <td>
+                <textarea name="description" id="" cols="40" rows="8"></textarea>
+            </td>
+            <td>
+                <input type="number" min="0" value="0">
+            </td>
+        </tr>
+    </template>
     <script src="../static/js/navigation.js"></script>
     <script>
         const electron = require("electron");
@@ -123,18 +175,26 @@
             }
         }
     </script> -->
-
     <script>
-    	function addTableSerial(tdId){
-    		let allrowid = Array.from(tdId);
-    		for(let i=0; i<allrowid.length; i++){
-    			allrowid[i].innerText = i+1;
-    		}
-    	}
-    	let giveTheseTdIds = document.getElementsByClassName("serialno");
-    	addTableSerial(giveTheseTdIds);
-    </script>
+        function addTableSerial(tdId) {
+            let allrowid = Array.from(tdId);
+            for (let i = 0; i < allrowid.length; i++) {
+                allrowid[i].innerText = i + 1;
+            }
+        }
+        let giveTheseTdIds = document.getElementsByClassName("serialno");
+        addTableSerial(giveTheseTdIds);
 
+        let alldateselectors = document.getElementsByClassName("datepicker");
+        defaultInputDayToday(alldateselectors);
+
+        function defaultInputDayToday(classSelOfDatePicker) {
+            let arrDates = Array.from(classSelOfDatePicker);
+            for (let i = 0; i < arrDates.length; i++) {
+                arrDates[i].valueAsDate = new Date();
+            }
+        }
+    </script>
 </body>
 
 </html>

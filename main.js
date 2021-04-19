@@ -61,8 +61,8 @@ let configStorePath = path.join(userDataPath, "configState.json");
 
 app.on("ready", function() {
     windows = new BrowserWindow({
-        width: 1100,
-        minWidth: 900,
+        width: 1200,
+        minWidth: 1200,
         minHeight: 700,
         // frame: false,
         webPreferences: {

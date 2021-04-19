@@ -3,6 +3,11 @@ table {
     /*background-color: blue;*/
     border-collapse: collapse;
 }
+@media screen and (max-width: 700px){
+	table{
+		max-width: 400px;
+	}
+}
 
 .heading {
     color: white;
@@ -35,3 +40,12 @@ tr:nth-child(1){
 .add_expense_row{
 	height: 10rem;
 }
+
+input[type="number"]{
+	width: 5rem;
+}
+
+textarea{
+	resize: vertical;
+}
+
