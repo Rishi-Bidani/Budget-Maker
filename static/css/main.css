@@ -39,6 +39,9 @@
     --floral-white: #fff8edff;
     --tea-green: #D3EFBD;
     --honeydew2: #CCDDD3;
+
+    --grey1: #ECEEED;
+    --grey2: #DBDDDD;
 }
 
 body {
@@ -113,6 +116,20 @@ ul {
     position: relative;
     padding-right: 0;
     margin-top: var(--navColorBarHeight);
+}
+
+.FullContainer{
+    margin-top: var(--navColorBarHeight);
+    position: relative;
+    width: 100%;
+}
+
+.center{
+    text-align: center;
+}
+
+.webkit-center{
+    text-align: -webkit-center
 }
 
 .addPadding {

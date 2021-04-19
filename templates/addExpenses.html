@@ -6,6 +6,7 @@
 </head>
 <link rel="stylesheet" href="../static/css/main.css">
 <link rel="stylesheet" href="../static/css/addexpenses/addexp.css">
+<link rel="stylesheet" href="../static/css/addexpenses/tablestyle.css">
 
 <body>
     <nav class="sidebar">
@@ -24,25 +25,56 @@
         <div class="navColorBar">
             <h1>Add Expenses</h1>
         </div>
-        <div class="gridContainer">
-            <div class="addPadding addGridExpenses">
+        <div class="FullContainer webkit-center">
+            <div class="addPadding">
+                <table>
+                    <thead class="heading">
+                        <tr class="heading-row">
+                            <td>S.No</td>
+                            <td>Category</td>
+                            <td>Sub-Category</td>
+                            <td>Date</td>
+                            <td>Description</td>
+                            <td>Amount</td>
+                        </tr>
+                    </thead>
+                    <tbody class="auto-index">
+                        <tr class="add_expense_row">
+                            <td class="serialno"></td>
+                            <td>srgd</td>
+                            <td>srdg</td>
+                            <td>srgs</td>
+                            <td>ser</td>
+                            <td></td>
+                        </tr>
+                        <tr class="add_expense_row">
+                            <td class="serialno"></td>
+                            <td>srgd</td>
+                            <td>srdg</td>
+                            <td>srgs</td>
+                            <td>ser</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
     <!-- Template For adding category and subcategory grids -->
-    <template>
+    <!--     <template>
         <div class="expenseGrid"></div>
         <div class="expenseGrid">
             <u><h3 class="mainCat"></h3></u>
             <h4>Total Budgeted Amount: </h4>
         </div>
     </template>
+ -->
     <script src="../static/js/navigation.js"></script>
     <script>
         const electron = require("electron");
         const { ipcRenderer } = electron;
     </script>
-    <script type="text/javascript">
+    <!--     <script type="text/javascript">
         function getTodayDate() {
             let today = new Date();
             let todaydate = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
@@ -90,7 +122,19 @@
 
             }
         }
+    </script> -->
+
+    <script>
+    	function addTableSerial(tdId){
+    		let allrowid = Array.from(tdId);
+    		for(let i=0; i<allrowid.length; i++){
+    			allrowid[i].innerText = i+1;
+    		}
+    	}
+    	let giveTheseTdIds = document.getElementsByClassName("serialno");
+    	addTableSerial(giveTheseTdIds);
     </script>
+
 </body>
 
 </html>

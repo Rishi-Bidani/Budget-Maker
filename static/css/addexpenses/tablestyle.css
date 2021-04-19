@@ -1,0 +1,37 @@
+table {
+    width: 90%;
+    /*background-color: blue;*/
+    border-collapse: collapse;
+}
+
+.heading {
+    color: white;
+    background-color: var(--color2);
+}
+
+.heading-row {
+    height: 2rem;
+}
+
+
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(1){
+	border-top-left-radius: 2rem;
+
+}
+
+.add_expense_row:nth-child(even) {
+	background-color: var(--grey1);
+}
+
+.add_expense_row:nth-child(odd) {
+	background-color: var(--grey2);
+}
+
+.add_expense_row{
+	height: 10rem;
+}
