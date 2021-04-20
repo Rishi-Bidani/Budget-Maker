@@ -168,55 +168,7 @@
             }
         }
     </script>
-    <!--     <script type="text/javascript">
-        function getTodayDate() {
-            let today = new Date();
-            let todaydate = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
-
-            document.getElementById("date").value = todaydate;
-        }
-    </script>
-    <script>
-        ipcRenderer.on("json:monthlyBudget", (e, data) => {
-            const budgetData = new ListOfObjects(data, "budget");
-            // console.log(budgetData.ObjectValueForKey("title"))
-            let titles = budgetData.ObjectValueForKey("title");
-
-            let mainGrid = Array.from(document.getElementsByClassName("addGridExpenses"));
-
-            let addExpGridTemp = document.getElementsByTagName("template")[0];
-
-            if (mainGrid[0].children.length == 0) {
-
-                for (let i = 0; i < titles.length; i++) {
-                    let formclone = addExpGridTemp.content.cloneNode(true);
-                    mainGrid[0].appendChild(formclone);
-                }
-
-                let allTitleGrids = Array.from(document.getElementsByClassName("mainCat"));
-                for (let i = 0; i < titles.length; i++) {
-                    allTitleGrids[i].innerText = titles[i];
-                }
-            }
-
-        })
-
-        class ListOfObjects {
-            constructor(data, jsonKeyHoldingData) {
-                // this.data = data;
-                this.masterData = JSON.parse(data[0][jsonKeyHoldingData]);
-            }
-            ObjectValueForKey(key) {
-                // console.table(this.masterData);
-                let arrToReturn = []
-                for (let i = 0; i < this.masterData.length; i++) {
-                    arrToReturn.push(this.masterData[i][key])
-                }
-                return arrToReturn
-
-            }
-        }
-    </script> -->
+    
     <script>
         let giveTheseTdIds = document.getElementsByClassName("serialno");
         addTableSerial(giveTheseTdIds);
