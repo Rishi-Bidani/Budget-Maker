@@ -93,15 +93,6 @@
             </div>
         </div>
     </div>
-    <!-- Template For adding category and subcategory grids -->
-    <!--     <template>
-        <div class="expenseGrid"></div>
-        <div class="expenseGrid">
-            <u><h3 class="mainCat"></h3></u>
-            <h4>Total Budgeted Amount: </h4>
-        </div>
-    </template>
- -->
     <template>
         <tr class="add_expense_row">
             <td class="serialno"></td>
@@ -133,9 +124,49 @@
         const electron = require("electron");
         const { ipcRenderer } = electron;
     </script>
-    <script type="module">
-        import{cloneTemplate} from "../static/js/addExpenses/clonetemplate"
-    	import{ArrangeCategories} from "../static/js/addExpenses/expenseclasses"
+    <!-- MY FUNCTIONS -->
+    <script>
+        function addTableSerial(tdId) {
+            let allrowid = Array.from(tdId);
+            for (let i = 0; i < allrowid.length; i++) {
+                allrowid[i].innerText = i + 1;
+            }
+        }
+
+        function defaultInputDayToday(classSelOfDatePicker) {
+            let arrDates = Array.from(classSelOfDatePicker);
+            for (let i = 0; i < arrDates.length; i++) {
+                arrDates[i].valueAsDate = new Date();
+            }
+        }
+    </script>
+    <!-- MY CLASSES -->
+    <script>
+        class ArrangeCategories {
+            constructor(data, jsonKey) {
+                this.data = data;
+                this.masterData = JSON.parse(data[0][jsonKey]);
+            }
+            returnTilesAndSubTitles() {
+                let ObjToReturn = new Object();
+                for (let i = 0; i < this.masterData.length; i++) {
+                    ObjToReturn[this.masterData[i]["title"]] =
+                        this.masterData[i]["subcategories"]
+                }
+                return ObjToReturn
+            }
+        }
+        class cloneTemplate {
+            constructor(template) {
+                this.template = template;
+            }
+            async cloneit(numclones, insertwhere) {
+                for (let i = 0; i <= numclones; i++) {
+                    let clone = this.template.content.cloneNode(true);
+                    insertwhere.appendChild(clone);
+                }
+            }
+        }
     </script>
     <!--     <script type="text/javascript">
         function getTodayDate() {
@@ -187,95 +218,49 @@
         }
     </script> -->
     <script>
-        function addTableSerial(tdId) {
-            let allrowid = Array.from(tdId);
-            for (let i = 0; i < allrowid.length; i++) {
-                allrowid[i].innerText = i + 1;
-            }
-        }
         let giveTheseTdIds = document.getElementsByClassName("serialno");
         addTableSerial(giveTheseTdIds);
 
         let alldateselectors = document.getElementsByClassName("datepicker");
         defaultInputDayToday(alldateselectors);
-
-        function defaultInputDayToday(classSelOfDatePicker) {
-            let arrDates = Array.from(classSelOfDatePicker);
-            for (let i = 0; i < arrDates.length; i++) {
-                arrDates[i].valueAsDate = new Date();
-            }
-        }
     </script>
     <script>
         ipcRenderer.on("json:monthlyBudget", (e, data) => {
+
+            let rowtemplate = document.getElementsByTagName("template")[0];
+            let tbody = document.getElementsByTagName("tbody")[0];
+
+
             let arrangeData = new ArrangeCategories(data, "budget");
+            let cloneObject = new cloneTemplate(rowtemplate);
+            let arrOfSubCats = new Array();
+
             // console.log(arrangeData.returnTilesAndSubTitles())
             let catAndSub = arrangeData.returnTilesAndSubTitles();
             console.table(catAndSub);
+            let arrOfCats = Object.keys(catAndSub);
 
-            let rowtemplate = document.getElementsByTagName("template")[0];
-            let cloneObject = new cloneTemplate(rowtemplate);
-
-            let tbody = document.getElementsByTagName("tbody")[0];
             cloneObject.cloneit(10, tbody).then(() => {
-                addTableSerial(giveTheseTdIds);
-                defaultInputDayToday(alldateselectors);
 
-                let arrOfCats = Object.keys(catAndSub);
-                let arrOfSubCats = new Array();
+                addTableSerial(giveTheseTdIds); // Serial num for new rows
+                defaultInputDayToday(alldateselectors);
 
                 for (let keys of Object.keys(catAndSub)) {
                     arrOfSubCats.push(catAndSub[keys])
                 }
+
                 for (let i = 0; i < arrOfCats.length; i++) {
-                    let createElementOption = document.createElement("OPTION");
-                    createElementOption.innerText = arrOfCats[i]
-                    appendToParent("cats", createElementOption)
+                    let parent = Array.from(document.getElementsByClassName("cats"));
+
+                    parent.forEach((Parent, index) => {
+                        let createElementOption = document.createElement("OPTION");
+                        createElementOption.innerText = arrOfCats[i]
+                        Parent.appendChild(createElementOption)
+                    });
                 }
 
             });
         });
-
-        function appendToParent(findclass, item) {
-            let parent = Array.from(document.getElementsByClassName(`${findclass}`));
-            console.log(parent)
-            for (let i = 0; i < parent.length; i++) {
-                console.log(parent[i])
-                parent[i].appendChild(item);
-            }
-
-        }
-    </script>
-    <!-- MY CLASSES -->
-    <script>
-        class ArrangeCategories {
-            constructor(data, jsonKey) {
-                this.data = data;
-                this.masterData = JSON.parse(data[0][jsonKey]);
-            }
-            returnTilesAndSubTitles() {
-                let ObjToReturn = new Object();
-                for (let i = 0; i < this.masterData.length; i++) {
-                    ObjToReturn[this.masterData[i]["title"]] =
-                        this.masterData[i]["subcategories"]
-                }
-                return ObjToReturn
-            }
-
-        }
-        class cloneTemplate {
-            constructor(template) {
-                this.template = template;
-            }
-            async cloneit(numclones, insertwhere) {
-                for (let i = 0; i <= numclones; i++) {
-                    let clone = this.template.content.cloneNode(true);
-                    insertwhere.appendChild(clone);
-                }
-
-            }
-
-        }
     </script>
 </body>
 
