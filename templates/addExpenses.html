@@ -43,7 +43,7 @@
                         <tr class="add_expense_row">
                             <td class="serialno"></td>
                             <td>
-                                <select name="categories"></select>
+                                <select name="categories" class="cats"></select>
                             </td>
                             <td>
                                 <select name="subCategories"></select>
@@ -67,7 +67,7 @@
                         <tr class="add_expense_row">
                             <td class="serialno"></td>
                             <td>
-                                <select name="categories"></select>
+                                <select name="categories" class="cats"></select>
                             </td>
                             <td>
                                 <select name="subCategories"></select>
@@ -103,7 +103,7 @@
     </template>
  -->
     <template>
-        <tr>
+        <tr class="add_expense_row">
             <td class="serialno"></td>
             <td>
                 <select name="categories" class="cats"></select>
@@ -112,7 +112,14 @@
                 <select name="subCategories"></select>
             </td>
             <td><input type="date" class="datepicker"></td>
-            <td></td>
+            <td>
+                <select>
+                    <option>Cash</option>
+                    <option>Credit Card</option>
+                    <option>Debit Card</option>
+                    <option>Online Payment</option>
+                </select>
+            </td>
             <td>
                 <textarea name="description" id="" cols="40" rows="8"></textarea>
             </td>
@@ -125,6 +132,10 @@
     <script>
         const electron = require("electron");
         const { ipcRenderer } = electron;
+    </script>
+    <script type="module">
+        import{cloneTemplate} from "../static/js/addExpenses/clonetemplate"
+    	import{ArrangeCategories} from "../static/js/addExpenses/expenseclasses"
     </script>
     <!--     <script type="text/javascript">
         function getTodayDate() {
@@ -200,29 +211,43 @@
             let arrangeData = new ArrangeCategories(data, "budget");
             // console.log(arrangeData.returnTilesAndSubTitles())
             let catAndSub = arrangeData.returnTilesAndSubTitles();
-            console.log(catAndSub)
+            console.table(catAndSub);
 
-            for (i = 0; i < 2; i++) {
-                let rowtemplate = document.getElementsByTagName("template")[0];
-                let rowclone = rowtemplate.content.cloneNode(true);
+            let rowtemplate = document.getElementsByTagName("template")[0];
+            let cloneObject = new cloneTemplate(rowtemplate);
 
-                // let getcats = Array.from(rowtemplate.getElementsByClassName("cats"));
-                let getcats = rowclone.getElementsByTagName("select")[0];
-                console.log(getcats)
-                for (let j = 0; j < Object.keys(catAndSub).length; j++) {
-                    let option = document.createElement("object");
+            let tbody = document.getElementsByTagName("tbody")[0];
+            cloneObject.cloneit(10, tbody).then(() => {
+                addTableSerial(giveTheseTdIds);
+                defaultInputDayToday(alldateselectors);
 
-                    option.innerText = Object.keys(catAndSub)[j];
-                    console.log(getcats)
-                    getcats.appendChild(option);
+                let arrOfCats = Object.keys(catAndSub);
+                let arrOfSubCats = new Array();
 
+                for (let keys of Object.keys(catAndSub)) {
+                    arrOfSubCats.push(catAndSub[keys])
+                }
+                for (let i = 0; i < arrOfCats.length; i++) {
+                    let createElementOption = document.createElement("OPTION");
+                    createElementOption.innerText = arrOfCats[i]
+                    appendToParent("cats", createElementOption)
                 }
 
-                let tbody = document.getElementById("expensesTable");
-                rowclone.appendChild(tbody)
-            }
-        })
+            });
+        });
 
+        function appendToParent(findclass, item) {
+            let parent = Array.from(document.getElementsByClassName(`${findclass}`));
+            console.log(parent)
+            for (let i = 0; i < parent.length; i++) {
+                console.log(parent[i])
+                parent[i].appendChild(item);
+            }
+
+        }
+    </script>
+    <!-- MY CLASSES -->
+    <script>
         class ArrangeCategories {
             constructor(data, jsonKey) {
                 this.data = data;
@@ -231,11 +256,23 @@
             returnTilesAndSubTitles() {
                 let ObjToReturn = new Object();
                 for (let i = 0; i < this.masterData.length; i++) {
-                    ObjToReturn[`${this.masterData[i]["title"]}`] =
+                    ObjToReturn[this.masterData[i]["title"]] =
                         this.masterData[i]["subcategories"]
                 }
-
                 return ObjToReturn
+            }
+
+        }
+        class cloneTemplate {
+            constructor(template) {
+                this.template = template;
+            }
+            async cloneit(numclones, insertwhere) {
+                for (let i = 0; i <= numclones; i++) {
+                    let clone = this.template.content.cloneNode(true);
+                    insertwhere.appendChild(clone);
+                }
+
             }
 
         }
