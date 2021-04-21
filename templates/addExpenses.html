@@ -159,9 +159,12 @@
         		subcats.appendChild(option);
         	}
 
-
-        	// console.log(JSON.parse(data));
-        	// console.log(test);
+        }
+        function clearCategories(){
+        	let cats = Array.from(document.getElementsByClassName("cats"));
+        	cats.forEach((item, index)=>{
+        		item.innerHTML = "";
+        	})
         }
     </script>
     <!-- MY CLASSES -->
@@ -202,6 +205,8 @@
     </script>
     <script>
         ipcRenderer.on("json:monthlyBudget", (e, data) => {
+        	localStorage.removeItem("data");
+        	clearCategories()
             let rowtemplate = document.getElementsByTagName("template")[0];
             let tbody = document.getElementsByTagName("tbody")[0];
 

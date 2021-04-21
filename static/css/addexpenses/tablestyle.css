@@ -1,11 +1,12 @@
 table {
     width: 90%;
+    max-width: 70rem;
     /*background-color: blue;*/
     border-collapse: collapse;
 }
-@media screen and (max-width: 700px){
+@media screen and (max-width: 1300px){
 	table{
-		max-width: 400px;
+		max-width: 10rem;
 	}
 }
 
@@ -48,4 +49,9 @@ input[type="number"]{
 textarea{
 	resize: vertical;
 }
+
+select{
+	max-width: 5rem;
+}
+
 
