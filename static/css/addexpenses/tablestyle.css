@@ -25,9 +25,12 @@ th, td {
   padding: 8px;
 }
 
-tr:nth-child(1){
-	border-top-left-radius: 2rem;
+thead tr:first-child td:first-child{
+	border-top-left-radius: 1rem;
+}
 
+thead tr:first-child td:last-child{
+	border-top-right-radius: 1rem;
 }
 
 .add_expense_row:nth-child(even) {
@@ -54,4 +57,11 @@ select{
 	max-width: 5rem;
 }
 
-
+#submit-expenses{
+	margin: 3rem;
+	width: 10rem;
+	height: 3rem;
+}
+#submit-expenses:hover{
+	cursor: pointer;
+}

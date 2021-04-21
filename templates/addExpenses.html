@@ -50,7 +50,7 @@
                             </td>
                             <td><input type="date" class="datepicker"></td>
                             <td>
-                                <select>
+                                <select name="paymentOption">
                                     <option>Cash</option>
                                     <option>Credit Card</option>
                                     <option>Debit Card</option>
@@ -61,7 +61,7 @@
                                 <textarea name="description" id="" cols="40" rows="8"></textarea>
                             </td>
                             <td>
-                                <input type="number" min="0" value="0">
+                                <input type="number" min="0" value="0" name="expenseAmount">
                             </td>
                         </tr>
                         <tr class="add_expense_row">
@@ -74,7 +74,7 @@
                             </td>
                             <td><input type="date" class="datepicker"></td>
                             <td>
-                                <select>
+                                <select name="paymentOption">
                                     <option>Cash</option>
                                     <option>Credit Card</option>
                                     <option>Debit Card</option>
@@ -85,7 +85,7 @@
                                 <textarea name="description" id="" cols="40" rows="8"></textarea>
                             </td>
                             <td>
-                                <input type="number" min="0" value="0">
+                                <input type="number" min="0" value="0" name="expenseAmount">
                             </td>
                         </tr>
                     </tbody>
@@ -93,6 +93,9 @@
                 <div onclick="addNewExpense()">
                     <img src="../static/icons/plus.svg" id="addButton" alt="">
                 </div>
+                <button id="submit-expenses" onClick="getFormData()">
+                    SUBMIT
+                </button>
             </div>
         </div>
     </div>
@@ -105,9 +108,9 @@
             <td>
                 <select name="subCategories" class="subcats"></select>
             </td>
-            <td><input type="date" class="datepicker"></td>
+            <td><input type="date" class="datepicker" name="datePicker"></td>
             <td>
-                <select>
+                <select name="paymentOption">
                     <option>Cash</option>
                     <option>Credit Card</option>
                     <option>Debit Card</option>
@@ -118,7 +121,7 @@
                 <textarea name="description" id="" cols="40" rows="8"></textarea>
             </td>
             <td>
-                <input type="number" min="0" value="0">
+                <input type="number" min="0" value="0" name="expenseAmount">
             </td>
         </tr>
     </template>
@@ -173,6 +176,7 @@
         }
 
         function addNewExpense() {
+            clearCategories(); // This will clear the categories and stop it from multiplying
             let rowtemplate = document.getElementsByTagName("template")[0];
             let tbody = document.getElementsByTagName("tbody")[0];
             let newclone = new cloneTemplate(rowtemplate);
@@ -198,6 +202,29 @@
                 }
 
             })
+        }
+
+        function getFormData() {         
+            let allExpenseRows = Array.from(document.getElementsByClassName("add_expense_row"));
+            let categories = Array.from(document.getElementsByName("categories"));
+            let subCategories = Array.from(document.getElementsByName("subCategories"));
+            let date = Array.from(document.getElementsByName("datePicker"));
+            let payoption = Array.from(document.getElementsByName("paymentOption"));
+            let description = Array.from(document.getElementsByName("description"));
+            let amount = Array.from(document.getElementsByName("expenseAmount"));
+
+            let formdata = {};
+
+            for (let i = 0; i < allExpenseRows.length; i++) {
+            	formdata[`row${i}`] = [
+            	categories[i].value, 
+            	subCategories[i].value, 
+            	date[i], payoption[i].value, 
+            	description[i].value,
+            	amount[i].value
+            	]
+            }
+            console.log(formdata)
         }
     </script>
     <!-- MY CLASSES -->
