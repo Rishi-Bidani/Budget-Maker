@@ -90,6 +90,9 @@
                         </tr>
                     </tbody>
                 </table>
+                <div onclick="addNewExpense()">
+                    <img src="../static/icons/plus.svg" id="addButton" alt="">
+                </div>
             </div>
         </div>
     </div>
@@ -139,32 +142,62 @@
                 arrDates[i].valueAsDate = new Date();
             }
         }
-        function setSubCategories(e){
-        	// test = e.options[e.selectedIndex].value;
-        	// test = e.value;
-        	index = e.parentElement.parentElement.rowIndex;
-        	thisTitle = e.value;
-        	let data = JSON.parse(localStorage.getItem("data"));
-        	// localStorage.removeItem("data");
-        	console.log(data[thisTitle]);
 
-        	// let titles = Object.keys(data);
-        	let subcats = Array.from(document.getElementsByClassName("subcats"))[index-1];
-        	subcats.innerHTML = "";
+        function setSubCategories(e) {
+            // test = e.options[e.selectedIndex].value;
+            // test = e.value;
+            index = e.parentElement.parentElement.rowIndex;
+            thisTitle = e.value;
+            let data = JSON.parse(localStorage.getItem("data"));
+            // localStorage.removeItem("data");
+            console.log(data[thisTitle]);
 
-        	for(let i=0; i<data[thisTitle].length; i++){
-        		let option = document.createElement("OPTION");
-        		option.innerText = data[thisTitle][i];
-        		option.value = data[thisTitle][i];
-        		subcats.appendChild(option);
-        	}
+            // let titles = Object.keys(data);
+            let subcats = Array.from(document.getElementsByClassName("subcats"))[index - 1];
+            subcats.innerHTML = "";
+
+            for (let i = 0; i < data[thisTitle].length; i++) {
+                let option = document.createElement("OPTION");
+                option.innerText = data[thisTitle][i];
+                option.value = data[thisTitle][i];
+                subcats.appendChild(option);
+            }
 
         }
-        function clearCategories(){
-        	let cats = Array.from(document.getElementsByClassName("cats"));
-        	cats.forEach((item, index)=>{
-        		item.innerHTML = "";
-        	})
+
+        function clearCategories() {
+            let cats = Array.from(document.getElementsByClassName("cats"));
+            cats.forEach((item, index) => {
+                item.innerHTML = "";
+            })
+        }
+
+        function addNewExpense() {
+            let rowtemplate = document.getElementsByTagName("template")[0];
+            let tbody = document.getElementsByTagName("tbody")[0];
+            let newclone = new cloneTemplate(rowtemplate);
+            let arrOfSubCats = new Array();
+            let catAndSub = JSON.parse(localStorage.getItem("data"));
+            let arrOfCats = Object.keys(catAndSub);
+
+            newclone.cloneit(1, tbody).then(() => {
+
+                for (let keys of Object.keys(catAndSub)) {
+                    arrOfSubCats.push(catAndSub[keys])
+                }
+
+                for (let i = 0; i < arrOfCats.length; i++) {
+                    let parent = Array.from(document.getElementsByClassName("cats"));
+
+                    parent.forEach((Parent, index) => {
+                        let createElementOption = document.createElement("OPTION");
+                        createElementOption.innerText = arrOfCats[i];
+                        // createElementOption.value = arrOfCats[i];
+                        Parent.appendChild(createElementOption)
+                    });
+                }
+
+            })
         }
     </script>
     <!-- MY CLASSES -->
@@ -188,14 +221,16 @@
                 this.template = template;
             }
             async cloneit(numclones, insertwhere) {
-                for (let i = 0; i <= numclones; i++) {
+                for (let i = 0; i < numclones; i++) {
                     let clone = this.template.content.cloneNode(true);
                     insertwhere.appendChild(clone);
+                    addTableSerial(giveTheseTdIds); // Serial num for new rows
+                    defaultInputDayToday(alldateselectors); // Date selector = today
+
                 }
             }
         }
     </script>
-    
     <script>
         let giveTheseTdIds = document.getElementsByClassName("serialno");
         addTableSerial(giveTheseTdIds);
@@ -205,44 +240,39 @@
     </script>
     <script>
         ipcRenderer.on("json:monthlyBudget", (e, data) => {
-        	localStorage.removeItem("data");
-        	clearCategories()
-            let rowtemplate = document.getElementsByTagName("template")[0];
-            let tbody = document.getElementsByTagName("tbody")[0];
+            localStorage.removeItem("data");
+            clearCategories()
+            // let rowtemplate = document.getElementsByTagName("template")[0];
+            // let tbody = document.getElementsByTagName("tbody")[0];
 
 
             let arrangeData = new ArrangeCategories(data, "budget");
-            let cloneObject = new cloneTemplate(rowtemplate);
-            let arrOfSubCats = new Array();
-
-            // console.log(arrangeData.returnTilesAndSubTitles())
+            // let cloneObject = new cloneTemplate(rowtemplate);
+            // let arrOfSubCats = new Array();
             let catAndSub = arrangeData.returnTilesAndSubTitles();
-            console.table(catAndSub);
-        	localStorage.setItem("data", JSON.stringify(catAndSub))
 
-            let arrOfCats = Object.keys(catAndSub);
+            localStorage.setItem("data", JSON.stringify(catAndSub))
 
-            cloneObject.cloneit(10, tbody).then(() => {
+            // let arrOfCats = Object.keys(catAndSub);
 
-                addTableSerial(giveTheseTdIds); // Serial num for new rows
-                defaultInputDayToday(alldateselectors);
+            // cloneObject.cloneit(10, tbody).then(() => {
 
-                for (let keys of Object.keys(catAndSub)) {
-                    arrOfSubCats.push(catAndSub[keys])
-                }
+            //     for (let keys of Object.keys(catAndSub)) {
+            //         arrOfSubCats.push(catAndSub[keys])
+            //     }
 
-                for (let i = 0; i < arrOfCats.length; i++) {
-                    let parent = Array.from(document.getElementsByClassName("cats"));
+            //     for (let i = 0; i < arrOfCats.length; i++) {
+            //         let parent = Array.from(document.getElementsByClassName("cats"));
 
-                    parent.forEach((Parent, index) => {
-                        let createElementOption = document.createElement("OPTION");
-                        createElementOption.innerText = arrOfCats[i];
-                        // createElementOption.value = arrOfCats[i];
-                        Parent.appendChild(createElementOption)
-                    });
-                }
+            //         parent.forEach((Parent, index) => {
+            //             let createElementOption = document.createElement("OPTION");
+            //             createElementOption.innerText = arrOfCats[i];
+            //             // createElementOption.value = arrOfCats[i];
+            //             Parent.appendChild(createElementOption)
+            //         });
+            //     }
 
-            });
+            // });
         });
     </script>
 </body>
