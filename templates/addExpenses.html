@@ -43,10 +43,10 @@
                         <tr class="add_expense_row">
                             <td class="serialno"></td>
                             <td>
-                                <select name="categories" class="cats"></select>
+                                <select name="categories" class="cats" onChange="setSubCategories(this)"></select>
                             </td>
                             <td>
-                                <select name="subCategories"></select>
+                                <select name="subCategories" class="subcats"></select>
                             </td>
                             <td><input type="date" class="datepicker"></td>
                             <td>
@@ -67,10 +67,10 @@
                         <tr class="add_expense_row">
                             <td class="serialno"></td>
                             <td>
-                                <select name="categories" class="cats"></select>
+                                <select name="categories" class="cats" onChange="setSubCategories(this)"></select>
                             </td>
                             <td>
-                                <select name="subCategories"></select>
+                                <select name="subCategories" class="subcats"></select>
                             </td>
                             <td><input type="date" class="datepicker"></td>
                             <td>
@@ -97,10 +97,10 @@
         <tr class="add_expense_row">
             <td class="serialno"></td>
             <td>
-                <select name="categories" class="cats"></select>
+                <select name="categories" class="cats" onChange="setSubCategories(this)"></select>
             </td>
             <td>
-                <select name="subCategories"></select>
+                <select name="subCategories" class="subcats"></select>
             </td>
             <td><input type="date" class="datepicker"></td>
             <td>
@@ -138,6 +138,30 @@
             for (let i = 0; i < arrDates.length; i++) {
                 arrDates[i].valueAsDate = new Date();
             }
+        }
+        function setSubCategories(e){
+        	// test = e.options[e.selectedIndex].value;
+        	// test = e.value;
+        	index = e.parentElement.parentElement.rowIndex;
+        	thisTitle = e.value;
+        	let data = JSON.parse(localStorage.getItem("data"));
+        	// localStorage.removeItem("data");
+        	console.log(data[thisTitle]);
+
+        	// let titles = Object.keys(data);
+        	let subcats = Array.from(document.getElementsByClassName("subcats"))[index-1];
+        	subcats.innerHTML = "";
+
+        	for(let i=0; i<data[thisTitle].length; i++){
+        		let option = document.createElement("OPTION");
+        		option.innerText = data[thisTitle][i];
+        		option.value = data[thisTitle][i];
+        		subcats.appendChild(option);
+        	}
+
+
+        	// console.log(JSON.parse(data));
+        	// console.log(test);
         }
     </script>
     <!-- MY CLASSES -->
@@ -178,7 +202,6 @@
     </script>
     <script>
         ipcRenderer.on("json:monthlyBudget", (e, data) => {
-
             let rowtemplate = document.getElementsByTagName("template")[0];
             let tbody = document.getElementsByTagName("tbody")[0];
 
@@ -190,6 +213,8 @@
             // console.log(arrangeData.returnTilesAndSubTitles())
             let catAndSub = arrangeData.returnTilesAndSubTitles();
             console.table(catAndSub);
+        	localStorage.setItem("data", JSON.stringify(catAndSub))
+
             let arrOfCats = Object.keys(catAndSub);
 
             cloneObject.cloneit(10, tbody).then(() => {
@@ -206,7 +231,8 @@
 
                     parent.forEach((Parent, index) => {
                         let createElementOption = document.createElement("OPTION");
-                        createElementOption.innerText = arrOfCats[i]
+                        createElementOption.innerText = arrOfCats[i];
+                        // createElementOption.value = arrOfCats[i];
                         Parent.appendChild(createElementOption)
                     });
                 }

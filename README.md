@@ -1,6 +1,9 @@
 # Budget-Maker
 This is a budget managing software which will allow you to plan out and manage your expenses.
 
+All your data is stored locally on your system, it is not stored on any servers.
+This means that all your data is secure and cannot be read by anyone else.
+
 <br />
 
 ## Table Of Contents
