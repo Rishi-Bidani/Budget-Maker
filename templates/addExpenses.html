@@ -48,7 +48,7 @@
                             <td>
                                 <select name="subCategories" class="subcats"></select>
                             </td>
-                            <td><input type="date" class="datepicker"></td>
+                            <td><input type="date" class="datepicker" name=datePicker></td>
                             <td>
                                 <select name="paymentOption">
                                     <option>Cash</option>
@@ -72,7 +72,7 @@
                             <td>
                                 <select name="subCategories" class="subcats"></select>
                             </td>
-                            <td><input type="date" class="datepicker"></td>
+                            <td><input type="date" class="datepicker" name="datePicker"></td>
                             <td>
                                 <select name="paymentOption">
                                     <option>Cash</option>
@@ -219,12 +219,13 @@
             	formdata[`row${i}`] = [
             	categories[i].value, 
             	subCategories[i].value, 
-            	date[i], payoption[i].value, 
+            	date[i].value,
+            	payoption[i].value, 
             	description[i].value,
             	amount[i].value
             	]
             }
-            console.log(formdata)
+            console.table(formdata)
         }
     </script>
     <!-- MY CLASSES -->
