@@ -18,9 +18,11 @@ process.env.NODE_ENV = "development";
 
 let windows;
 
+// Create tables if they don't exist => expecting it to only run the first time the app is launched
 try {
     db.serialize(function() {
         db.run("CREATE TABLE IF NOT EXISTS budgets(month TEXT, budget TEXT, total INTEGER)");
+        db.run("CREATE TABLE IF NOT EXISTS expenses(category TEXT, subcategory TEXT, date TEXT, paymentmethod TEXT, description TEXT, amount INTEGER)");
     });
 } catch (e) {
     console.log(e);
@@ -218,4 +220,18 @@ ipcMain.on("form:planbudget", (e, item) => {
 
 ipcMain.on("form:expenseData", (e, item)=>{
   console.log(item);
+  let keys = Object.keys(item);
+  console.log(keys);
+  keys.forEach((thiskey, index)=>{
+
+    knex("expenses").insert([{
+      category: item[thiskey][0],
+      subcategory: item[thiskey][1],
+      date: item[thiskey][2],
+      paymentmethod: item[thiskey][3],
+      description: item[thiskey][4],
+      amount: item[thiskey][5],
+    }]).then(()=>{})
+
+  })
 })
