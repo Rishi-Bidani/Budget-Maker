@@ -157,7 +157,7 @@ ipcMain.on("which:Window", (e, item) => {
             .select('budget')
             .from('budgets')
             .where('month', '=', todaydate).then((budget) => {
-                console.log(budget)
+                // console.log(budget)
                 windows.webContents.on("did-finish-load", () => {
                     windows.webContents.send("json:monthlyBudget", budget)
 
@@ -214,4 +214,8 @@ ipcMain.on("form:planbudget", (e, item) => {
     //     })
     // })
 
+})
+
+ipcMain.on("form:expenseData", (e, item)=>{
+  console.log(item);
 })

@@ -225,7 +225,8 @@
             	amount[i].value
             	]
             }
-            console.table(formdata)
+            console.table(formdata);
+            ipcRenderer.send("form:expenseData", formdata);
         }
     </script>
     <!-- MY CLASSES -->
