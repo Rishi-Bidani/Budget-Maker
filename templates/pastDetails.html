@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Budget Maker</title>
+</head>
+<link rel="stylesheet" href="../static/css/main.css">
+<link rel="stylesheet" href="../static/css/pastdetails/pastdetails.css">
+
+<body>
+    <nav class="sidebar">
+        <ul id="navList">
+            <li class="navitem">Home</li>
+            <li class="navitem">
+                Plan Budget
+            </li>
+            <li class="navitem">Add Expenses</li>
+            <li class="navitem">Plan a Trip</li>
+            <li class="navitem">Add a project</li>
+            <li class="navitem navactive">View Past Details</li>
+        </ul>
+    </nav>
+    <div class="mainPage">
+        <div class="navColorBar">
+            <h1>View Past Expenses</h1>
+        </div>
+        <div class="FullContainer webkit-center">
+            <div class="addPadding">
+                <table>
+                    <thead class="heading">
+                        <tr class="heading-row">
+                            <td>S.No</td>
+                            <td>Category</td>
+                            <td>Sub-Category</td>
+                            <td>Date</td>
+                            <td>Payment Method</td>
+                            <td>Description</td>
+                            <td>Amount</td>
+                        </tr>
+                    </thead>
+                    <tbody id="details">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <template>
+        <tr class="add_expense_row">
+            <td class="serialno"></td>
+            <td class="category"> .</td>
+            <td class="subcategory"> .</td>
+            <td class="date"> .</td>
+            <td class="paymentmethod"> .</td>
+            <td class="description"> .</td>
+            <td class="amount"> .</td>
+        </tr>
+    </template>
+    <script src="../static/js/navigation.js"></script>
+    <script>
+        const electron = require("electron");
+        const { ipcRenderer } = electron;
+    </script>
+    <script>
+        function addTableSerial(tdId) {
+            let allrowid = Array.from(tdId);
+            for (let i = 0; i < allrowid.length; i++) {
+                allrowid[i].innerText = i + 1;
+            }
+        }
+    </script>
+    <script type="text/javascript">
+    	let giveTheseTdIds = document.getElementsByClassName("serialno")
+        class cloneTemplate {
+            constructor(template) {
+                this.template = template;
+            }
+            async cloneit(numclones, insertwhere) {
+                for (let i = 0; i < numclones; i++) {
+                    let clone = this.template.content.cloneNode(true);
+                    insertwhere.appendChild(clone);
+                    addTableSerial(giveTheseTdIds); // Serial num for new rows
+                }
+            }
+        }
+    </script>
+    <script>
+        let template = document.getElementsByTagName("template")[0];
+        let tbody = document.getElementById("details");
+        let templateclone = new cloneTemplate(template);
+        ipcRenderer.on("item:expenseData", (e, data) => {
+        	console.log(data);
+            templateclone.cloneit(data.length, tbody).then(()=>{
+            	let cat = document.getElementsByClassName("category");
+            	let scat = document.getElementsByClassName("subcategory");
+            	let date = document.getElementsByClassName("date");
+            	let pmethod = document.getElementsByClassName("paymentmethod");
+            	let desc = document.getElementsByClassName("description");
+            	let amt = document.getElementsByClassName("amount");
+            	for(let i=0; i<cat.length; i++){
+            		cat[i].innerText = data[i]["category"];
+            		scat[i].innerText = data[i]["subcategory"];
+            		date[i].innerText = data[i]["date"];
+            		pmethod[i].innerText = data[i]["paymentmethod"];
+            		desc[i].innerText = data[i]["description"];
+            		amt[i].innerText = data[i]["amount"];
+            	}
+            })
+
+        })
+    </script>
+</body>
+
+</html>

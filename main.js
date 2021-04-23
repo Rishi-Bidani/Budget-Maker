@@ -171,6 +171,20 @@ ipcMain.on("which:Window", (e, item) => {
             url.format({
                 pathname: path.join(__dirname, "templates/addExpenses.html")
             }))
+
+    } else if (item == "window:PastDetails") {
+        windows.webContents.on("did-finish-load", () => {
+            knex("expenses").select().then((data) => {
+                windows.webContents.send("item:expenseData", data)
+            })
+        });
+        windows.loadURL(
+            url.format({
+                pathname: path.join(__dirname, "templates/pastDetails.html"),
+                protocol: "file:",
+                slashes: true,
+            })
+        );
     }
 })
 
@@ -221,57 +235,57 @@ ipcMain.on("form:planbudget", (e, item) => {
 })
 
 function sum(obj) {
-  var sum = 0;
-  let keys = Object.keys(obj);
-  keys.forEach( function(key, index) {
-    sum = sum + parseFloat(obj[key][5]);
-  });
-  return sum;
+    var sum = 0;
+    let keys = Object.keys(obj);
+    keys.forEach(function(key, index) {
+        sum = sum + parseFloat(obj[key][5]);
+    });
+    return sum;
 }
 
 
-async function asyncForEach(keys, item){
-  let arrOfObj = [];
-  keys.forEach((thiskey, index)=>{
-    let rowObject = {
-      category: item[thiskey][0],
-      subcategory: item[thiskey][1],
-      date: item[thiskey][2],
-      paymentmethod: item[thiskey][3],
-      description: item[thiskey][4],
-      amount: item[thiskey][5],
-    }
-    arrOfObj.push(rowObject);
-  })
-  return arrOfObj;
-}
-
-ipcMain.on("form:expenseData", (e, item)=>{
-  console.log(item);
-  let keys = Object.keys(item);
-  console.log(keys);
-  let totalExpenseAmount = item
-
-  asyncForEach(keys, item).then((data)=>{
-    knex("expenses").insert(data).then(()=>{
-      console.log(`sum: ${sum(item)}`)
-      let remainingAmount = planBudgetStore.get("totalRemaining");
-      remainingAmount -= sum(item); // sum(item) = total of expenses added
-      planBudgetStore.set("totalRemaining", remainingAmount)
+async function asyncForEach(keys, item) {
+    let arrOfObj = [];
+    keys.forEach((thiskey, index) => {
+        let rowObject = {
+            category: item[thiskey][0],
+            subcategory: item[thiskey][1],
+            date: item[thiskey][2],
+            paymentmethod: item[thiskey][3],
+            description: item[thiskey][4],
+            amount: item[thiskey][5],
+        }
+        arrOfObj.push(rowObject);
     })
-  })
+    return arrOfObj;
+}
 
-  // keys.forEach((thiskey, index)=>{
+ipcMain.on("form:expenseData", (e, item) => {
+    console.log(item);
+    let keys = Object.keys(item);
+    console.log(keys);
+    let totalExpenseAmount = item
 
-  //   knex("expenses").insert([{
-  //     category: item[thiskey][0],
-  //     subcategory: item[thiskey][1],
-  //     date: item[thiskey][2],
-  //     paymentmethod: item[thiskey][3],
-  //     description: item[thiskey][4],
-  //     amount: item[thiskey][5],
-  //   }]).then(()=>{
-  //     totalExpenseAmount.push(item[thiskey][5]);
-  //   })
-  // })
+    asyncForEach(keys, item).then((data) => {
+        knex("expenses").insert(data).then(() => {
+            console.log(`sum: ${sum(item)}`)
+            let remainingAmount = planBudgetStore.get("totalRemaining");
+            remainingAmount -= sum(item); // sum(item) = total of expenses added
+            planBudgetStore.set("totalRemaining", remainingAmount)
+        })
+    })
+
+    // keys.forEach((thiskey, index)=>{
+
+    //   knex("expenses").insert([{
+    //     category: item[thiskey][0],
+    //     subcategory: item[thiskey][1],
+    //     date: item[thiskey][2],
+    //     paymentmethod: item[thiskey][3],
+    //     description: item[thiskey][4],
+    //     amount: item[thiskey][5],
+    //   }]).then(()=>{
+    //     totalExpenseAmount.push(item[thiskey][5]);
+    //   })
+    // })
 })

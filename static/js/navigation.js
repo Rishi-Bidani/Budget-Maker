@@ -11,6 +11,8 @@ ul.onclick = function(event) {
             "window:PlanBudget");
     }else if(compare == "ADD EXPENSES"){
         ipcRenderer.send("which:Window", "window:AddExpenses")
+    }else if(compare == "VIEW PAST DETAILS"){
+        ipcRenderer.send("which:Window", "window:PastDetails")
     }
      else {
         console.log("ERROR")
