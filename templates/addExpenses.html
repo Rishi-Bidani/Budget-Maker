@@ -204,7 +204,7 @@
             })
         }
 
-        function getFormData() {         
+        function getFormData() {
             let allExpenseRows = Array.from(document.getElementsByClassName("add_expense_row"));
             let categories = Array.from(document.getElementsByName("categories"));
             let subCategories = Array.from(document.getElementsByName("subCategories"));
@@ -216,14 +216,17 @@
             let formdata = {};
 
             for (let i = 0; i < allExpenseRows.length; i++) {
-            	formdata[`row${i}`] = [
-            	categories[i].value, 
-            	subCategories[i].value, 
-            	date[i].value,
-            	payoption[i].value, 
-            	description[i].value,
-            	amount[i].value
-            	]
+                if (amount[i].value > 0) {
+                    formdata[`row${i}`] = [
+                        categories[i].value,
+                        subCategories[i].value,
+                        date[i].value,
+                        payoption[i].value,
+                        description[i].value,
+                        amount[i].value
+                    ]
+                } else {}
+
             }
             console.table(formdata);
             ipcRenderer.send("form:expenseData", formdata);

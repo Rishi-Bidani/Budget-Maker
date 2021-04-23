@@ -196,6 +196,7 @@ ipcMain.on("form:planbudget", (e, item) => {
                         total: item.total
                     }).then(() => {
                         planBudgetStore.set("totalBudget", item.total)
+                        planBudgetStore.set("totalRemaining", item.total)
                     })
             } else {
                 knex("budgets").insert([{
@@ -204,6 +205,7 @@ ipcMain.on("form:planbudget", (e, item) => {
                     total: item.total,
                 }]).then(() => {
                     planBudgetStore.set("totalBudget", item.total)
+                    planBudgetStore.set("totalRemaining", item.total)
                 })
             }
         })
@@ -218,20 +220,58 @@ ipcMain.on("form:planbudget", (e, item) => {
 
 })
 
-ipcMain.on("form:expenseData", (e, item)=>{
-  console.log(item);
-  let keys = Object.keys(item);
-  console.log(keys);
-  keys.forEach((thiskey, index)=>{
+function sum(obj) {
+  var sum = 0;
+  let keys = Object.keys(obj);
+  keys.forEach( function(key, index) {
+    sum = sum + parseFloat(obj[key][5]);
+  });
+  return sum;
+}
 
-    knex("expenses").insert([{
+
+async function asyncForEach(keys, item){
+  let arrOfObj = [];
+  keys.forEach((thiskey, index)=>{
+    let rowObject = {
       category: item[thiskey][0],
       subcategory: item[thiskey][1],
       date: item[thiskey][2],
       paymentmethod: item[thiskey][3],
       description: item[thiskey][4],
       amount: item[thiskey][5],
-    }]).then(()=>{})
-
+    }
+    arrOfObj.push(rowObject);
   })
+  return arrOfObj;
+}
+
+ipcMain.on("form:expenseData", (e, item)=>{
+  console.log(item);
+  let keys = Object.keys(item);
+  console.log(keys);
+  let totalExpenseAmount = item
+
+  asyncForEach(keys, item).then((data)=>{
+    knex("expenses").insert(data).then(()=>{
+      console.log(`sum: ${sum(item)}`)
+      let remainingAmount = planBudgetStore.get("totalRemaining");
+      remainingAmount -= sum(item); // sum(item) = total of expenses added
+      planBudgetStore.set("totalRemaining", remainingAmount)
+    })
+  })
+
+  // keys.forEach((thiskey, index)=>{
+
+  //   knex("expenses").insert([{
+  //     category: item[thiskey][0],
+  //     subcategory: item[thiskey][1],
+  //     date: item[thiskey][2],
+  //     paymentmethod: item[thiskey][3],
+  //     description: item[thiskey][4],
+  //     amount: item[thiskey][5],
+  //   }]).then(()=>{
+  //     totalExpenseAmount.push(item[thiskey][5]);
+  //   })
+  // })
 })
