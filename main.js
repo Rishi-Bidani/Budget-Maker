@@ -54,6 +54,7 @@ const planBudgetStore = new Store({
     defaults: {
         totalBudget: 0,
         totalRemaining: 0,
+        savings: 0,
     }
 })
 planBudgetStore.set()
@@ -101,8 +102,9 @@ app.on("ready", function() {
     })
     windows.webContents.on("did-finish-load", () => {
         windows.webContents.send("item:budgetData", {
-            total: planBudgetStore.get("totalBudget"),
-            remaining: planBudgetStore.get("totalRemaining")
+            total: parseFloat(planBudgetStore.get("totalBudget")),
+            remaining: parseFloat(planBudgetStore.get("totalRemaining")),
+            savings: parseFloat(planBudgetStore.get("savings")),
         })
     })
     windows.maximize();
@@ -129,9 +131,11 @@ ipcMain.on("which:Window", (e, item) => {
                 month: configStore.get("monthsList")[date.getMonth()]
             })
             windows.webContents.on("did-finish-load", () => {
+                console.log(planBudgetStore.get("savings"))
                 windows.webContents.send("item:budgetData", {
-                    total: planBudgetStore.get("totalBudget"),
-                    remaining: planBudgetStore.get("totalRemaining")
+                    total: parseFloat(planBudgetStore.get("totalBudget")),
+                    remaining: parseFloat(planBudgetStore.get("totalRemaining")),
+                    savings: parseFloat(planBudgetStore.get("savings")),
                 })
             })
         });
@@ -187,13 +191,15 @@ ipcMain.on("which:Window", (e, item) => {
     }
 })
 
+// Make a budget
 ipcMain.on("form:planbudget", (e, item) => {
     let today = new Date();
     let todaydate = today.getFullYear() + '-' + (today.getMonth() + 1) //+ '-' + today.getDate();
 
     // If u enter another plan on the same day it will update 
     // the old plan instead of creating a new one
-    knex.select('month').from('budgets')
+    knex
+        .select('month').from('budgets')
         .where('month', '=', todaydate)
         .then((data) => {
             if (data.length >= 1) {
@@ -203,8 +209,12 @@ ipcMain.on("form:planbudget", (e, item) => {
                         budget: JSON.stringify(item.bud),
                         total: item.total
                     }).then(() => {
-                        planBudgetStore.set("totalBudget", item.total)
-                        planBudgetStore.set("totalRemaining", item.total)
+                        let savings = parseFloat(planBudgetStore.get("savings"));
+                        savings += parseFloat(planBudgetStore.get("totalRemaining"));
+                        planBudgetStore.set("savings", savings);
+                        planBudgetStore.set("savings", parseFloat(savings - parseFloat(item.total)));
+                        planBudgetStore.set("totalBudget", parseFloat(item.total));
+                        planBudgetStore.set("totalRemaining", parseFloat(item.total));
                     })
             } else {
                 knex("budgets").insert([{
@@ -212,8 +222,12 @@ ipcMain.on("form:planbudget", (e, item) => {
                     budget: JSON.stringify(item.bud),
                     total: item.total,
                 }]).then(() => {
-                    planBudgetStore.set("totalBudget", item.total)
-                    planBudgetStore.set("totalRemaining", item.total)
+                    let savings = planBudgetStore.get("savings");
+                    savings += planBudgetStore.get("totalRemaining");
+                    planBudgetStore.set("savings", savings);
+                    planBudgetStore.set("savings", parseFloat(parseFloat(savings) - parseFloat(item.total)));
+                    planBudgetStore.set("totalBudget", parseFloat(item.total));
+                    planBudgetStore.set("totalRemaining", parseFloat(item.total));
                 })
             }
         })
@@ -228,6 +242,15 @@ ipcMain.on("form:planbudget", (e, item) => {
 
 })
 
+ipcMain.on("form:income", (e, item) => {
+    console.log(item);
+    let currentSavings = parseFloat(planBudgetStore.get("savings"));
+    planBudgetStore.set("savings", parseFloat(parseFloat(currentSavings) + parseFloat(item)));
+    let newSavings = parseFloat(planBudgetStore.get("savings"));
+    windows.webContents.send("item:income:update", newSavings);
+
+})
+
 
 function generateCSV(arr) {
     const array = [Object.keys(arr[0])].concat(arr)
@@ -235,7 +258,7 @@ function generateCSV(arr) {
     let csvdata = array.map(it => {
         return Object.values(it).toString()
     }).join('\n')
-    fs.writeFileSync("expenses.csv", csvdata);
+    fs.writeFileSync(path.join(app.getPath("downloads"), "expenses.csv"), csvdata);
 }
 
 ipcMain.on("download:csv", (e, item) => {
@@ -283,7 +306,7 @@ ipcMain.on("form:expenseData", (e, item) => {
             console.log(`sum: ${sum(item)}`)
             let remainingAmount = planBudgetStore.get("totalRemaining");
             remainingAmount -= sum(item); // sum(item) = total of expenses added
-            planBudgetStore.set("totalRemaining", remainingAmount)
+            planBudgetStore.set("totalRemaining", parseFloat(remainingAmount))
         })
     })
 

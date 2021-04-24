@@ -49,7 +49,12 @@
                     <img src="../static/icons/economic.svg" alt="">
                     <dl>
                         <dt>Total Savings</dt>
-                        <dd>$</dd>
+                        <dd id="totalSavings">$</dd>
+                        <dt>Add Income</dt>
+                        <dd>
+                            <input type="number" min="0" id="addIncome">
+                            <button id="addIncomeButton">✓</button>
+                        </dd>
                     </dl>
                 </div>
                 <div class="card cardtype4"></div>
@@ -71,6 +76,10 @@
     const electron = require("electron");
     const { ipcRenderer } = electron;
     </script>
+    <script>
+        let totalSavings = document.getElementById("totalSavings");
+        let incomeButton = document.getElementById("addIncomeButton");
+    </script>
     <script type="text/javascript">
     ipcRenderer.on("item:whichMonth", (e, data) => {
         document.getElementById("getMonth").innerText = data.month;
@@ -78,9 +87,22 @@
             .innerText = data.latestMonth;
     });
 
+    incomeButton.onclick = ()=>{
+        let income = document.getElementById("addIncome");
+        console.log(income.value)
+        ipcRenderer.send("form:income", income.value);
+        income.value= "";
+    }
+
+    ipcRenderer.on("item:income:update", (e, data)=>{
+        totalSavings.innerText = data
+    })
+
     ipcRenderer.on("item:budgetData", (e,data)=>{
+        console.log(data.savings)
         document.getElementById("total").innerText = data.total;
         document.getElementById("remaining").innerText = data.remaining;
+        totalSavings.innerText = data.savings;
     })
 
     </script>

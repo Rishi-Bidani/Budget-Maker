@@ -43,6 +43,7 @@
                 </table>
             </div>
             <button id="downloadcsv">DOWNLOAD CSV</button>
+            <p class="note">NOTE: Downloaded CSV will be under downloads</p>
         </div>
     </div>
     <template>
@@ -76,6 +77,7 @@
                 this.template = template;
             }
             async cloneit(numclones, insertwhere) {
+            	insertwhere.innerHTML = "";
                 for (let i = 0; i < numclones; i++) {
                     let clone = this.template.content.cloneNode(true);
                     insertwhere.appendChild(clone);

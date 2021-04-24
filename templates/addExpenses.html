@@ -40,7 +40,8 @@
                         </tr>
                     </thead>
                     <tbody class="auto-index" id="expensesTable">
-                        <tr class="add_expense_row">
+                    	<!-- COmmented out a default row -->
+<!--                         <tr class="add_expense_row">
                             <td class="serialno"></td>
                             <td>
                                 <select name="categories" class="cats" onChange="setSubCategories(this)"></select>
@@ -62,32 +63,7 @@
                             </td>
                             <td>
                                 <input type="number" min="0" value="0" name="expenseAmount">
-                            </td>
-                        </tr>
-                        <tr class="add_expense_row">
-                            <td class="serialno"></td>
-                            <td>
-                                <select name="categories" class="cats" onChange="setSubCategories(this)"></select>
-                            </td>
-                            <td>
-                                <select name="subCategories" class="subcats"></select>
-                            </td>
-                            <td><input type="date" class="datepicker" name="datePicker"></td>
-                            <td>
-                                <select name="paymentOption">
-                                    <option>Cash</option>
-                                    <option>Credit Card</option>
-                                    <option>Debit Card</option>
-                                    <option>Online Payment</option>
-                                </select>
-                            </td>
-                            <td>
-                                <textarea name="description" id="" cols="40" rows="8"></textarea>
-                            </td>
-                            <td>
-                                <input type="number" min="0" value="0" name="expenseAmount">
-                            </td>
-                        </tr>
+                            </td> -->
                     </tbody>
                 </table>
                 <div onclick="addNewExpense()">
@@ -106,7 +82,8 @@
                 <select name="categories" class="cats" onChange="setSubCategories(this)"></select>
             </td>
             <td>
-                <select name="subCategories" class="subcats"></select>
+                <select name="subCategories" class="subcats">
+                </select>
             </td>
             <td><input type="date" class="datepicker" name="datePicker"></td>
             <td>
@@ -258,7 +235,6 @@
                     insertwhere.appendChild(clone);
                     addTableSerial(giveTheseTdIds); // Serial num for new rows
                     defaultInputDayToday(alldateselectors); // Date selector = today
-
                 }
             }
         }

@@ -104,3 +104,13 @@ dl dd {
     font-weight: bolder;
     font-size: 2rem;
 }
+
+#addIncomeButton{
+	width: 1.5rem;
+	height: 1.5rem;
+	cursor: pointer;
+}
+
+input[type="number"]{
+	height: 1.5rem;
+}
