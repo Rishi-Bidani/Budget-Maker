@@ -3,7 +3,10 @@ const url = require("url");
 const path = require("path");
 const { Menu } = require("electron/main");
 const { app, BrowserWindow, ipcMain, webContents } = electron;
+
 const Store = require('./static/js/storage.js');
+const mbd = require('./static/js/budgetdata.js'); //manage budget data
+
 const userDataPath = (electron.app || electron.remote.app).getPath('userData');
 const fs = require('fs');
 var sqlite3 = require('sqlite3').verbose();
@@ -339,32 +342,6 @@ knex
     .select("budget").from('budgets')
     .where('month', '=', todaydate)
     .then((data) => {
-        let test = new manageBudgetData(data);
-        console.log(test.CategoriesWithAmount())
+        let test = new mbd(data);
+        console.log(test.SubcatWithAmount())
     })
-
-
-class manageBudgetData {
-    constructor(data) {
-        this.data = JSON.parse(data[0]["budget"]);
-    }
-    totalForCategory(category) {
-      let totalAmountArr;
-      this.data.forEach( function(element, index) {
-        if(element["title"] == `${category}`){
-          totalAmountArr = element["amount"];
-        }else{}
-      });
-      // the input can only be integers, and this is an offline app
-      // so eval is fine
-      return eval(totalAmountArr.join('+'))
-    }
-    CategoriesWithAmount(){
-      let catWithAmt = {};
-      this.data.forEach( (element, index) => {
-        catWithAmt[`${element["title"]}`] = this.totalForCategory(`${element["title"]}`);
-      });
-      return catWithAmt;
-    }
-
-}
