@@ -159,7 +159,6 @@ ipcMain.on("which:Window", (e, item) => {
             .select('budget')
             .from('budgets')
             .where('month', '=', todaydate).then((budget) => {
-                // console.log(budget)
                 windows.webContents.on("did-finish-load", () => {
                     windows.webContents.send("json:monthlyBudget", budget)
 
@@ -189,13 +188,8 @@ ipcMain.on("which:Window", (e, item) => {
 })
 
 ipcMain.on("form:planbudget", (e, item) => {
-    // console.log(item);
     let today = new Date();
     let todaydate = today.getFullYear() + '-' + (today.getMonth() + 1) //+ '-' + today.getDate();
-
-    // knex.select('budget').from("budgets").then((data) => {
-    //     console.log(data);
-    // })
 
     // If u enter another plan on the same day it will update 
     // the old plan instead of creating a new one
@@ -232,6 +226,24 @@ ipcMain.on("form:planbudget", (e, item) => {
     //     })
     // })
 
+})
+
+
+function generateCSV(arr) {
+    const array = [Object.keys(arr[0])].concat(arr)
+
+    let csvdata = array.map(it => {
+        return Object.values(it).toString()
+    }).join('\n')
+    fs.writeFileSync("expenses.csv", csvdata);
+}
+
+ipcMain.on("download:csv", (e, item) => {
+    knex("expenses")
+        .select()
+        .then(data => {
+            generateCSV(data);
+        })
 })
 
 function sum(obj) {

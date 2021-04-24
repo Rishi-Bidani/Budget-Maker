@@ -42,6 +42,7 @@
                     </tbody>
                 </table>
             </div>
+            <button id="downloadcsv">DOWNLOAD CSV</button>
         </div>
     </div>
     <template>
@@ -107,6 +108,12 @@
             })
 
         })
+
+        let downcsvbut = document.getElementById("downloadcsv");
+        downcsvbut.onclick = ()=>{
+        	ipcRenderer.send("download:csv", "download")
+        }
+
     </script>
 </body>
 

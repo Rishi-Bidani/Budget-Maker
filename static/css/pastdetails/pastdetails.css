@@ -44,3 +44,10 @@ thead tr:first-child td:last-child{
 .add_expense_row{
 	height: 5rem;
 }
+
+#downloadcsv{
+  padding: 1rem;
+}
+#downloadcsv:hover{
+  cursor: pointer;
+}
