@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../static/css/main.css">
     <link rel="stylesheet" href="../static/css/home/home.css">
     <link rel="stylesheet" href="../static/css/home/jello.css">
+    <script src="../static/js/chart-min.js"></script>
 </head>
 
 <body>
@@ -60,8 +61,14 @@
                 <div class="card cardtype4"></div>
                 <div class="card cardtype5"></div>
                 <div class="card cardtype6"></div>
-                <div class="card"></div>
-                <!--                 <div class="card"></div>
+                <div class="card cardtype7">
+                    <div class="categorytitle">H</div>
+                    <div class="canvas">
+                        <canvas class="myChart"></canvas>
+                    </div>
+                </div>
+
+                <!--<div class="card"></div>
                 <div class="card"></div>
 
                 <div class="card"></div>
@@ -70,41 +77,113 @@
             </div>
         </div>
     </div>
+    <template>
+        <div class="card cardtype7">
+            <div class="categorytitle">H</div>
+            <div class="canvas">
+                <canvas class="myChart"></canvas>
+            </div>
+        </div>
+    </template>
     <!-- Navigation -->
     <script type="text/javascript" src="../static/js/navigation.js"></script>
     <script type="text/javascript">
-    const electron = require("electron");
-    const { ipcRenderer } = electron;
+        const electron = require("electron");
+        const { ipcRenderer } = electron;
     </script>
     <script>
         let totalSavings = document.getElementById("totalSavings");
         let incomeButton = document.getElementById("addIncomeButton");
     </script>
     <script type="text/javascript">
-    ipcRenderer.on("item:whichMonth", (e, data) => {
-        document.getElementById("getMonth").innerText = data.month;
-        document.getElementById("date")
-            .innerText = data.latestMonth;
-    });
+        ipcRenderer.on("item:whichMonth", (e, data) => {
+            document.getElementById("getMonth").innerText = data.month;
+            document.getElementById("date")
+                .innerText = data.latestMonth;
+        });
 
-    incomeButton.onclick = ()=>{
-        let income = document.getElementById("addIncome");
-        console.log(income.value)
-        ipcRenderer.send("form:income", income.value);
-        income.value= "";
-    }
+        incomeButton.onclick = () => {
+            let income = document.getElementById("addIncome");
+            console.log(income.value)
+            ipcRenderer.send("form:income", income.value);
+            income.value = "";
+        }
 
-    ipcRenderer.on("item:income:update", (e, data)=>{
-        totalSavings.innerText = data
-    })
+        ipcRenderer.on("item:income:update", (e, data) => {
+            totalSavings.innerText = data
+        })
 
-    ipcRenderer.on("item:budgetData", (e,data)=>{
-        console.log(data.savings)
-        document.getElementById("total").innerText = data.total;
-        document.getElementById("remaining").innerText = data.remaining;
-        totalSavings.innerText = data.savings;
-    })
+        ipcRenderer.on("item:budgetData", (e, data) => {
+            console.log(data.savings)
+            document.getElementById("total").innerText = data.total;
+            document.getElementById("remaining").innerText = data.remaining;
+            totalSavings.innerText = data.savings;
+        })
+    </script>
+    <script>
+        class makeChart {
+            constructor(canvas, position) {
+                this.canvas = canvas;
+                this.position = position;
+            }
 
+            doughnut(xVal, yVal, clrs) {
+                new Chart(this.canvas, {
+                    type: "doughnut",
+                    data: {
+                        labels: xVal,
+                        datasets: [{
+                            backgroundColor: clrs,
+                            data: yVal
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                position: `${this.position}`,
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                })
+            }
+        }
+
+        var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+        var yValues = [55, 49, 44, 24, 15];
+        var barColors = [
+            "#b91d47",
+            "#00aba9",
+            "#2b5797",
+            "#e8c3b9",
+            "#1e7145"
+        ];
+
+        let cnvs = Array.from(document.getElementsByClassName("myChart"))[0];
+        let chart = new makeChart(cnvs, "left")
+        chart.doughnut(xValues, yValues, barColors);
+
+        // new Chart(chart, {
+        //     type: "doughnut",
+        //     data: {
+        //         labels: xValues,
+        //         datasets: [{
+        //             backgroundColor: barColors,
+        //             data: yValues
+        //         }]
+        //     },
+        //     options: {
+        //         plugins: {
+        //             legend: {
+        //                 position: 'left',
+        //             }
+        //         },
+
+        //         responsive: true,
+        //         maintainAspectRatio: false
+        //     }
+        // });
     </script>
 </body>
 

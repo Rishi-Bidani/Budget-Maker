@@ -107,6 +107,11 @@ app.on("ready", function() {
             savings: parseFloat(planBudgetStore.get("savings")),
         })
     })
+    // windows.webContents.on("did-finish-load", () => {
+    //   let 
+    //     windows.webContents.send("item:budgetData", {
+    //     })
+    // })
     windows.maximize();
     windows.loadURL(
         url.format({
@@ -243,7 +248,7 @@ ipcMain.on("form:planbudget", (e, item) => {
 })
 
 ipcMain.on("form:income", (e, item) => {
-    console.log(item);
+    // console.log(item);
     let currentSavings = parseFloat(planBudgetStore.get("savings"));
     planBudgetStore.set("savings", parseFloat(parseFloat(currentSavings) + parseFloat(item)));
     let newSavings = parseFloat(planBudgetStore.get("savings"));
@@ -296,14 +301,14 @@ async function asyncForEach(keys, item) {
 }
 
 ipcMain.on("form:expenseData", (e, item) => {
-    console.log(item);
+    // console.log(item);
     let keys = Object.keys(item);
     console.log(keys);
     let totalExpenseAmount = item
 
     asyncForEach(keys, item).then((data) => {
         knex("expenses").insert(data).then(() => {
-            console.log(`sum: ${sum(item)}`)
+            // console.log(`sum: ${sum(item)}`)
             let remainingAmount = planBudgetStore.get("totalRemaining");
             remainingAmount -= sum(item); // sum(item) = total of expenses added
             planBudgetStore.set("totalRemaining", parseFloat(remainingAmount))
@@ -324,3 +329,42 @@ ipcMain.on("form:expenseData", (e, item) => {
     //   })
     // })
 })
+
+// ======================================
+
+let today = new Date();
+let todaydate = today.getFullYear() + '-' + (today.getMonth() + 1) //+ '-' + today.getDate();
+
+knex
+    .select("budget").from('budgets')
+    .where('month', '=', todaydate)
+    .then((data) => {
+        let test = new manageBudgetData(data);
+        console.log(test.CategoriesWithAmount())
+    })
+
+
+class manageBudgetData {
+    constructor(data) {
+        this.data = JSON.parse(data[0]["budget"]);
+    }
+    totalForCategory(category) {
+      let totalAmountArr;
+      this.data.forEach( function(element, index) {
+        if(element["title"] == `${category}`){
+          totalAmountArr = element["amount"];
+        }else{}
+      });
+      // the input can only be integers, and this is an offline app
+      // so eval is fine
+      return eval(totalAmountArr.join('+'))
+    }
+    CategoriesWithAmount(){
+      let catWithAmt = {};
+      this.data.forEach( (element, index) => {
+        catWithAmt[`${element["title"]}`] = this.totalForCategory(`${element["title"]}`);
+      });
+      return catWithAmt;
+    }
+
+}
