@@ -110,11 +110,24 @@ app.on("ready", function() {
             savings: parseFloat(planBudgetStore.get("savings")),
         })
     })
-    // windows.webContents.on("did-finish-load", () => {
-    //   let 
-    //     windows.webContents.send("item:budgetData", {
-    //     })
-    // })
+    windows.webContents.on("did-finish-load", () => {
+
+        let today = new Date();
+        let todaydate = today.getFullYear() + '-' + (today.getMonth() + 1) //+ '-' + today.getDate();
+
+        knex
+            .select("budget").from('budgets')
+            .where('month', '=', todaydate)
+            .then((data) => {
+                let budgetdata = new mbd(data);
+                windows.webContents.send("item:graphData", {
+                    catwithamt: budgetdata.CategoriesWithAmount(),
+                    catwithsub: budgetdata.CategoriesWithSubcat(),
+                    subcatwithamt: budgetdata.SubcatWithAmount(),
+
+                })
+            })
+    })
     windows.maximize();
     windows.loadURL(
         url.format({
@@ -139,7 +152,7 @@ ipcMain.on("which:Window", (e, item) => {
                 month: configStore.get("monthsList")[date.getMonth()]
             })
             windows.webContents.on("did-finish-load", () => {
-                console.log(planBudgetStore.get("savings"))
+                // console.log(planBudgetStore.get("savings"))
                 windows.webContents.send("item:budgetData", {
                     total: parseFloat(planBudgetStore.get("totalBudget")),
                     remaining: parseFloat(planBudgetStore.get("totalRemaining")),
@@ -335,13 +348,29 @@ ipcMain.on("form:expenseData", (e, item) => {
 
 // ======================================
 
-let today = new Date();
-let todaydate = today.getFullYear() + '-' + (today.getMonth() + 1) //+ '-' + today.getDate();
 
-knex
-    .select("budget").from('budgets')
-    .where('month', '=', todaydate)
-    .then((data) => {
-        let test = new mbd(data);
-        console.log(test.SubcatWithAmount())
-    })
+
+class expenseData {
+    constructor(storage) {
+        this.storage = storage;
+    }
+    getSubCatDetails(subcat) {
+        try {
+            return this.storage.get("subcat")
+        } catch (e) {
+            console.log(e);
+            return null
+        }
+    }
+    addExpenseForSubcat(subcat, amt) {
+        if (this.getSubCatDetails(subcat) != null) {
+            let data = this.getSubCatDetails(subcat);
+            this.storage.set(`${subcat}`, {
+                total: data.total,
+                remaining: (data.remaining - amt),
+            })
+        } else {
+            console.log("error getting data");
+        }
+    }
+}

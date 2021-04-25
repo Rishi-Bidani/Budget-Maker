@@ -1,7 +1,7 @@
 .card {
     width: 95%;
     height: 10rem;
-    background-color: white;
+    background-color: #fafaf2;
 }
 
 /*.card1{
@@ -97,11 +97,16 @@
 .categorytitle{
 	width: 100%;
 	height: 2rem;
-	background-color: grey;
+	background-color: var(--color2);
 	display: flex;
 	align-items: center;
 	border-top-right-radius: 0.5rem;
 	border-top-left-radius: 0.5rem;
+}
+.cattext{
+    color: white;
+    font-weight: bold;
+    padding:0.5rem;
 }
 
 img {

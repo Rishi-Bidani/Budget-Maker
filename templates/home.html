@@ -67,7 +67,6 @@
                         <canvas class="myChart"></canvas>
                     </div>
                 </div>
-
                 <!--<div class="card"></div>
                 <div class="card"></div>
 
@@ -79,9 +78,11 @@
     </div>
     <template>
         <div class="card cardtype7">
-            <div class="categorytitle">H</div>
+            <div class="categorytitle">
+                <span class="cattext">H</span>
+            </div>
             <div class="canvas">
-                <canvas class="myChart"></canvas>
+                <canvas class="myTempChart"></canvas>
             </div>
         </div>
     </template>
@@ -122,7 +123,7 @@
     </script>
     <script>
         class makeChart {
-            constructor(canvas, position) {
+            constructor(canvas, position = "left") {
                 this.canvas = canvas;
                 this.position = position;
             }
@@ -149,6 +150,45 @@
                 })
             }
         }
+        class cloneTemplate {
+            constructor(template) {
+                this.template = template;
+            }
+            async cloneit(numclones, insertwhere) {
+                for (let i = 0; i < numclones; i++) {
+                    let clone = this.template.content.cloneNode(true);
+                    insertwhere.appendChild(clone);
+                }
+            }
+        }
+        var barColors = [
+            "#b91d47",
+            "#00aba9",
+            "#2b5797",
+            "#e8c3b9",
+            "#1e7145"
+        ];
+        ipcRenderer.on("item:graphData", (e, data) => {
+            let datalength = Object.keys(data.catwithamt).length;
+            let addGridParent = Array.from(document.getElementsByClassName("addGrid"))[0];
+            let template = document.getElementsByTagName("template")[0];
+            let clonetemp = new cloneTemplate(template);
+
+            clonetemp.cloneit(datalength, addGridParent).then(() => {
+
+                let categoryTitle = Array.from(document.getElementsByClassName("cattext"));
+                let canvases = Array.from(document.getElementsByClassName("myTempChart"));
+
+                for (let i = 0; i < categoryTitle.length; i++) {
+                    let xvals = data.catwithsub[Object.keys(data.catwithamt)[i]];
+                    let newchart = new makeChart(canvases[i], "left");
+
+                    categoryTitle[i].innerText = Object.keys(data.catwithamt)[i];
+                    newchart.doughnut(xvals, [1,1,1], barColors)
+                }
+
+            })
+        })
 
         var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
         var yValues = [55, 49, 44, 24, 15];
