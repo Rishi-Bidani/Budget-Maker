@@ -160,6 +160,24 @@ ipcMain.on("which:Window", (e, item) => {
                 })
             })
         });
+        windows.webContents.on("did-finish-load", () => {
+
+            let today = new Date();
+            let todaydate = today.getFullYear() + '-' + (today.getMonth() + 1) //+ '-' + today.getDate();
+
+            knex
+                .select("budget").from('budgets')
+                .where('month', '=', todaydate)
+                .then((data) => {
+                    let budgetdata = new mbd(data);
+                    windows.webContents.send("item:graphData", {
+                        catwithamt: budgetdata.CategoriesWithAmount(),
+                        catwithsub: budgetdata.CategoriesWithSubcat(),
+                        subcatwithamt: budgetdata.SubcatWithAmount(),
+
+                    })
+                })
+        })
         windows.loadURL(
             url.format({
                 pathname: path.join(__dirname, "templates/home.html"),
