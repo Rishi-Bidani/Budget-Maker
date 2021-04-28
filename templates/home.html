@@ -173,7 +173,6 @@
             "#e8c3b9",
             "#1e7145"
         ];
-
         ipcRenderer.on("item:graphData", (e, data) => {
             console.log(data.subcatalldetails)
             let datalength = Object.keys(data.catwithamt).length;
@@ -187,6 +186,7 @@
                 let canvases = Array.from(document.getElementsByClassName("myTempChart"));
 
                 for (let i = 0; i < categoryTitle.length; i++) {
+
                     let xvals = data.catwithsub[Object.keys(data.catwithamt)[i]];
                     let yvals = [];
                     let totalForCurrentChart = 0;
@@ -194,13 +194,10 @@
                     let usedForCurrentChart = 0;
 
                     let newchart = new makeChart(canvases[i], "left");
-                    for (let i = 0; i < (barColors.length - xvals.length + 1); i++) {
-                        barColors.pop();
-                    }
-                    barColors.push("#000000");
-                    console.log(barColors);
+                    new_barColors = barColors.slice(0, xvals.length);
+                    new_barColors.push("#000000");
+
                     xvals.forEach(function(element, index) {
-                        // xvals[index] += `: ${data.subcatwithamt[element]}`;
                         yvals.push(data.subcatwithamt[element]);
                         totalForCurrentChart += data.subcatalldetails[data.subcatalldetails.findIndex(el => el.subcategory == element)].total;
 
@@ -210,7 +207,7 @@
                     xvals.push("Used");
                     yvals.push(usedForCurrentChart);
                     categoryTitle[i].innerText = Object.keys(data.catwithamt)[i];
-                    newchart.doughnut(xvals, yvals, barColors)
+                    newchart.doughnut(xvals, yvals, new_barColors)
                 }
 
             })
