@@ -201,7 +201,7 @@
             collectFormData().then((data) => {
                 totalAmount = document.getElementById("amount").innerText;
                 ipcRenderer.send("form:planbudget", {
-                    bud: data,
+                    budget: data,
                     total: totalAmount,
                 });
             })

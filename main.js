@@ -5,7 +5,7 @@ const { Menu } = require("electron/main");
 const { app, BrowserWindow, ipcMain, webContents } = electron;
 
 const Store = require('./static/js/storage.js');
-const mbd = require('./static/js/budgetdata.js'); //manage budget data
+const { manageBudgetData: mbd } = require('./static/js/budgetdata.js'); //manage budget data
 
 const userDataPath = (electron.app || electron.remote.app).getPath('userData');
 const fs = require('fs');
@@ -19,19 +19,55 @@ var db = new sqlite3.Database(path.join(userDataPath, 'planbudget.db'), err => {
 //SET ENV
 process.env.NODE_ENV = "development";
 
-let windows;
+
+// ================================= MY CLASSES ================================= //
+
+class SubcatExpenseData {
+    constructor(storage) {
+        this.storage = storage;
+    }
+    setupdetails(subcat) {
+
+    }
+    getSubCatDetails(subcat) {
+        try {
+            return this.storage.get(`${subcat}`)
+        } catch (e) {
+            console.log(e);
+            return null
+        }
+    }
+    addExpenseForSubcat(subcat, amt) {
+        if (this.getSubCatDetails(subcat) != null) {
+            let data = this.getSubCatDetails(subcat);
+            this.storage.set(`${subcat}`, {
+                total: data.total,
+                remaining: (data.remaining - amt),
+            })
+        } else {
+            console.log("error getting data");
+        }
+    }
+    clearAll() {
+        this.storage.clearall();
+    }
+}
+
+// ================================ END MY CLASSES ============================== //
 
 // Create tables if they don't exist => expecting it to only run the first time the app is launched
 try {
     db.serialize(function() {
         db.run("CREATE TABLE IF NOT EXISTS budgets(month TEXT, budget TEXT, total INTEGER)");
         db.run("CREATE TABLE IF NOT EXISTS expenses(category TEXT, subcategory TEXT, date TEXT, paymentmethod TEXT, description TEXT, amount INTEGER)");
+        db.run("CREATE TABLE IF NOT EXISTS subcatrem(subcategory TEXT, total INTEGER, remaining INTEGER)");
     });
 } catch (e) {
     console.log(e);
 }
 
 db.close();
+
 
 knex = require('knex')({
     client: 'sqlite3',
@@ -40,6 +76,8 @@ knex = require('knex')({
     },
     useNullAsDefault: true,
 });
+
+// JSON STORAGE SETUP ========================================= //
 
 const configStore = new Store({
     configName: 'configState',
@@ -60,11 +98,22 @@ const planBudgetStore = new Store({
         savings: 0,
     }
 })
-planBudgetStore.set()
+
+// const subcatStore = new Store({
+//     configName: 'subcatExpenses',
+// });
+
+planBudgetStore.set();
+// subcatStore.set();
+// =========================================================== //
 
 let configStorePath = path.join(userDataPath, "configState.json");
 // store.set("databaseCreated", );
 
+// let SubcatExpenses = new SubcatExpenseData(subcatStore);
+
+let windows; // This will handle all the windows
+// Main Window
 app.on("ready", function() {
     windows = new BrowserWindow({
         width: 1200,
@@ -119,13 +168,22 @@ app.on("ready", function() {
             .select("budget").from('budgets')
             .where('month', '=', todaydate)
             .then((data) => {
-                let budgetdata = new mbd(data);
-                windows.webContents.send("item:graphData", {
-                    catwithamt: budgetdata.CategoriesWithAmount(),
-                    catwithsub: budgetdata.CategoriesWithSubcat(),
-                    subcatwithamt: budgetdata.SubcatWithAmount(),
-
-                })
+                try {
+                    let budgetdata = new mbd(data);
+                    let subcatalldetails;
+                    knex("subcatrem").select()
+                        .then((subcatrem) => {
+                            windows.webContents.send("item:graphData", {
+                                catwithamt: budgetdata.CategoriesWithAmount(),
+                                catwithsub: budgetdata.CategoriesWithSubcat(),
+                                subcatwithamt: budgetdata.SubcatWithAmount(),
+                                subcatalldetails: subcatrem,
+                            })
+                        })
+                } catch (e) {
+                    // statements
+                    console.log(e);
+                }
             })
     })
     windows.maximize();
@@ -143,6 +201,7 @@ app.on("ready", function() {
     });
 });
 
+// Navigation => Different Windows
 ipcMain.on("which:Window", (e, item) => {
     if (item == "window:home") {
         windows.webContents.on("did-finish-load", () => {
@@ -169,13 +228,22 @@ ipcMain.on("which:Window", (e, item) => {
                 .select("budget").from('budgets')
                 .where('month', '=', todaydate)
                 .then((data) => {
-                    let budgetdata = new mbd(data);
-                    windows.webContents.send("item:graphData", {
-                        catwithamt: budgetdata.CategoriesWithAmount(),
-                        catwithsub: budgetdata.CategoriesWithSubcat(),
-                        subcatwithamt: budgetdata.SubcatWithAmount(),
-
-                    })
+                    try {
+                        let budgetdata = new mbd(data);
+                        let subcatalldetails;
+                        knex("subcatrem").select()
+                            .then((subcatrem) => {
+                                windows.webContents.send("item:graphData", {
+                                    catwithamt: budgetdata.CategoriesWithAmount(),
+                                    catwithsub: budgetdata.CategoriesWithSubcat(),
+                                    subcatwithamt: budgetdata.SubcatWithAmount(),
+                                    subcatalldetails: subcatrem,
+                                })
+                            })
+                    } catch (e) {
+                        // statements
+                        console.log(e);
+                    }
                 })
         })
         windows.loadURL(
@@ -234,6 +302,20 @@ ipcMain.on("which:Window", (e, item) => {
 ipcMain.on("form:planbudget", (e, item) => {
     let today = new Date();
     let todaydate = today.getFullYear() + '-' + (today.getMonth() + 1) //+ '-' + today.getDate();
+    console.log(item);
+    let subcatrem = [];
+    knex("subcatrem").del().then(() => {});
+    let insertarr = [];
+    for (let i = 0; i < item.budget.length; i++) {
+        for (j = 0; j < item.budget[i]["subcategories"].length; j++) {
+            insertarr.push({
+                subcategory: item.budget[i]["subcategories"][j],
+                total: item.budget[i]["amount"][j],
+                remaining: item.budget[i]["amount"][j]
+            })
+        }
+    }
+    knex("subcatrem").insert(insertarr).then(() => { console.log("success") })
 
     // If u enter another plan on the same day it will update 
     // the old plan instead of creating a new one
@@ -245,9 +327,10 @@ ipcMain.on("form:planbudget", (e, item) => {
                 knex('budgets')
                     .where('month', '=', todaydate)
                     .update({
-                        budget: JSON.stringify(item.bud),
+                        budget: JSON.stringify(item.budget),
                         total: item.total
                     }).then(() => {
+                        // SubcatExpenses.clearAll();
                         let savings = parseFloat(planBudgetStore.get("savings"));
                         savings += parseFloat(planBudgetStore.get("totalRemaining"));
                         planBudgetStore.set("savings", savings);
@@ -258,7 +341,7 @@ ipcMain.on("form:planbudget", (e, item) => {
             } else {
                 knex("budgets").insert([{
                     month: todaydate,
-                    budget: JSON.stringify(item.bud),
+                    budget: JSON.stringify(item.budget),
                     total: item.total,
                 }]).then(() => {
                     let savings = planBudgetStore.get("savings");
@@ -334,6 +417,7 @@ async function asyncForEach(keys, item) {
     return arrOfObj;
 }
 
+// Receiving data add expenses
 ipcMain.on("form:expenseData", (e, item) => {
     // console.log(item);
     let keys = Object.keys(item);
@@ -343,6 +427,12 @@ ipcMain.on("form:expenseData", (e, item) => {
     asyncForEach(keys, item).then((data) => {
         knex("expenses").insert(data).then(() => {
             // console.log(`sum: ${sum(item)}`)
+            data.forEach((element, index) => {
+                knex("subcatrem")
+                    .where("subcategory", "=", `${element.subcategory}`)
+                    .decrement('remaining', element.amount)
+                    .then(() => {})
+            });
             let remainingAmount = planBudgetStore.get("totalRemaining");
             remainingAmount -= sum(item); // sum(item) = total of expenses added
             planBudgetStore.set("totalRemaining", parseFloat(remainingAmount))
@@ -365,30 +455,3 @@ ipcMain.on("form:expenseData", (e, item) => {
 })
 
 // ======================================
-
-
-
-class expenseData {
-    constructor(storage) {
-        this.storage = storage;
-    }
-    getSubCatDetails(subcat) {
-        try {
-            return this.storage.get("subcat")
-        } catch (e) {
-            console.log(e);
-            return null
-        }
-    }
-    addExpenseForSubcat(subcat, amt) {
-        if (this.getSubCatDetails(subcat) != null) {
-            let data = this.getSubCatDetails(subcat);
-            this.storage.set(`${subcat}`, {
-                total: data.total,
-                remaining: (data.remaining - amt),
-            })
-        } else {
-            console.log("error getting data");
-        }
-    }
-}

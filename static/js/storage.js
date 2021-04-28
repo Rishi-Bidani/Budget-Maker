@@ -20,6 +20,9 @@ class Store {
         this.data[key] = val;
         fs.writeFileSync(this.path, JSON.stringify(this.data, undefined, ' '));
     }
+    clearall(){
+        fs.writeFile(this.path, '', function(){})
+    }
 }
 
 function parseDataFile(filePath, defaults) {

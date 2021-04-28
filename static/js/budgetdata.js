@@ -3,16 +3,16 @@ class manageBudgetData {
         this.data = JSON.parse(data[0]["budget"]);
     }
     totalForCategory(category) {
-      let totalAmountArr;
-      this.data.forEach( function(element, index) {
-        if(element["title"] == `${category}`){
-          totalAmountArr = element["amount"];
-        }else{}
-      });
-      // the input can only be integers, and this is an offline app
-      // so eval is fine
-      // return eval(totalAmountArr.join('+'))
-      return totalAmountArr.reduce((a, b)=> a + (+b), 0)
+        let totalAmountArr;
+        this.data.forEach(function(element, index) {
+            if (element["title"] == `${category}`) {
+                totalAmountArr = element["amount"];
+            } else {}
+        });
+        // the input can only be integers, and this is an offline app
+        // so eval is fine
+        // return eval(totalAmountArr.join('+'))
+        return totalAmountArr.reduce((a, b) => a + (+b), 0)
     }
     // totalForCategory(category) {
     //     return this.data
@@ -47,4 +47,4 @@ class manageBudgetData {
 
 }
 
-module.exports = manageBudgetData;
+module.exports = {manageBudgetData};

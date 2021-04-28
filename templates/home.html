@@ -173,7 +173,9 @@
             "#e8c3b9",
             "#1e7145"
         ];
+
         ipcRenderer.on("item:graphData", (e, data) => {
+            console.log(data.subcatalldetails)
             let datalength = Object.keys(data.catwithamt).length;
             let addGridParent = Array.from(document.getElementsByClassName("addGrid"))[0];
             let template = document.getElementsByTagName("template")[0];
@@ -187,12 +189,26 @@
                 for (let i = 0; i < categoryTitle.length; i++) {
                     let xvals = data.catwithsub[Object.keys(data.catwithamt)[i]];
                     let yvals = [];
-                    let newchart = new makeChart(canvases[i], "left");
+                    let totalForCurrentChart = 0;
+                    let remForCurrentChart = 0;
+                    let usedForCurrentChart = 0;
 
+                    let newchart = new makeChart(canvases[i], "left");
+                    for (let i = 0; i < (barColors.length - xvals.length + 1); i++) {
+                        barColors.pop();
+                    }
+                    barColors.push("#000000");
+                    console.log(barColors);
                     xvals.forEach(function(element, index) {
                         // xvals[index] += `: ${data.subcatwithamt[element]}`;
                         yvals.push(data.subcatwithamt[element]);
+                        totalForCurrentChart += data.subcatalldetails[data.subcatalldetails.findIndex(el => el.subcategory == element)].total;
+
+                        remForCurrentChart += data.subcatalldetails[data.subcatalldetails.findIndex(el => el.subcategory == element)].remaining;
                     });
+                    usedForCurrentChart = totalForCurrentChart - remForCurrentChart;
+                    xvals.push("Used");
+                    yvals.push(usedForCurrentChart);
                     categoryTitle[i].innerText = Object.keys(data.catwithamt)[i];
                     newchart.doughnut(xvals, yvals, barColors)
                 }
